@@ -1,1 +1,3 @@
-# predictive-affect
+# Predictive Affect Psychology Project
+
+### Readme WIP

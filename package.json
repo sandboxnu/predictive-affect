@@ -1,0 +1,34 @@
+{
+  "name": "predictive-affect",
+  "version": "1.0.0",
+  "description": "Psychology experiment designed to test the effects of the valence of an image on the ability to recognize image patterns.",
+  "main": "experiment.js",
+  "dependencies": {
+    "jspsych": "github:jspsych/jsPsych"
+  },
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandboxneu/predictive-affect.git"
+  },
+  "keywords": [
+    "psychology",
+    "jspsych",
+    "javascript"
+  ],
+  "author": "Northeastern University Sandbox",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sandboxneu/predictive-affect/issues"
+  },
+  "homepage": "https://github.com/sandboxneu/predictive-affect#readme"
+}

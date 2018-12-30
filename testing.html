@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My experiment</title>
+    <title>Testing Phase</title>
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
     <link href="node_modules/jspsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
@@ -9,27 +9,28 @@
   <body></body>
   <script>
 
-  timeline = [];
+  const timeline = [];
 
-  const testing_instructions = {
+  const testingInstructions = {
     type: 'instructions',
     pages: ['<div><p>In this part of the experiment, you will see two groups of images: Group A and Group B. Each group includes three images, which will appear one after the other.</p> <p>Your job is to indicate which group looks most familiar. Please pay close attention when the i\
 mages are shown, as they will not be repeated.</p> <p>First, we will show you Groups A and B. After seeing all groups, you will decide which group looks most familiar.</p><p>To start the experiment, please press "J".</p><p>To see the instructions again, please press "F".</p></div>'],
     key_forward: 'j',
    };
 
-  timeline.push(testing_instructions);
+  timeline.push(testingInstructions);
 
-  const testing_finish = {
+  const testingFinish = {
     type: 'instructions',
     pages: ['<div> <p> Thank you for finishing this part of the experiment. </p> <p>To continue, press "J".</p></div>'],
     key_forward: 'j',
   };
 
-  timeline.push(testing_finish);
+  timeline.push(testingFinish);
 
   jsPsych.init({
-        timeline: timeline,
-  })
+    timeline: timeline,
+  });
+
   </script>
 </html>

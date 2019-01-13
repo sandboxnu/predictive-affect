@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Testing Phase</title>
+    <script src="node_modules/jspsych/jspsych.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
+    <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
+  </head>
+  <body></body>
+  <script>
+
+  const timeline = [];
+
+  const encodingInstructionsPanel1 = {
+    type: 'html-keyboard-response',
+    stimulus: 'In the first part of the experiment, a series of images will appear on the screen, one after the other.\n\nThese images will have a grey patch on them.\n\nIf you see a grey patch on the left side of the picture, please press the button “J” as quickly as possible. If you see a grey patch on the right side of the picture, please press the button “K” as quickly as possible.\n\nPlease make sure you always use the same fingers to press the buttons. \n\nYou will see many images, so we will give you breaks periodically.\n\nIf at any point of this part of the experiment that you want to quit, please press "Q".\n\nTo continue, please press "K".',
+    choices: ['k'],
+  };
+
+  const encodingInstructionsPanel2 = {
+    type: 'html-keyboard-response',
+    stimulus: 'Next, you will see a screen with a dot representing the center. Then, the image trialing will start.\nPress "J" to continue.',
+    choices: ['j'],
+  }
+  
+  timeline.push(encodingInstructionsPanel1);
+  timeline.push(encodingInstructionsPanel2);
+
+  const testingFinish = {
+    type: 'instructions',
+    pages: ['<div> <p> Thank you for finishing this part of the experiment. </p> <p>To continue, press "J".</p></div>'],
+    key_forward: 'j',
+  };
+
+  timeline.push(testingFinish);
+
+  jsPsych.init({
+    timeline: timeline,
+  });
+
+  </script>
+</html>

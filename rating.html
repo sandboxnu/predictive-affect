@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rating Phase</title>
+    <script src="node_modules/jspsych/jspsych.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-html-slider-response.js"></script>
+    <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
+    <style>
+      img {
+        width: 300px;
+      }
+    </style>
+  
+  </head>
+  <body></body>
+  <script>
+
+  const timeline = [];
+
+  var trial = {
+    type: 'html-slider-response',
+    min: 0,
+    max: 10,
+    stimulus: '<p>Running</p>',
+    labels: ['healthy', 'unhealthy'],
+    prompt: "<p>How healthy/unhealthy is this activity?</p>"
+  };
+  timeline.push(trial);
+
+  const rating = {
+		type: "image-keyboard-response",
+    stimulus: 'assets/stimuli/neutral/1114.jpg',
+		choices: ['j', 'k'],
+		prompt: '<p>Is this face happy? Y or N.</p>'
+   };
+   
+  timeline.push(rating);
+
+
+  jsPsych.init({
+    timeline: timeline,
+  });
+
+  </script>
+</html>

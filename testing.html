@@ -10,12 +10,13 @@
   <body></body>
   <script>
 
-    //every image has fields of: type(neg or neu)
-
-
   // constants
   const timeline = [];
   const imageStructLength = 3;
+
+  const exemplarsPerTripletType = 2;
+  const tripletTypes = ["NeuNeuNeu", "AffAffAff", "NeuNeuAff", "AffNeuNeu"];
+  const numTripletTypes = tripletTypes.length;
 
   // hardcoded for now
   const negImages = ['9909.jpg', '7380.jpg', '9530.jpg', '3261.jpg', '6315.jpg', '9571.jpg', '9412.jpg', '2456.jpg', '9220.jpg', '3019.jpg', '2352.2.jpg', '9187.jpg', '2811.jpg', '9006.jpg', '9183.jpg', '9927.jpg', '2688.jpg', '9414.jpg', '3350.jpg', '3212.jpg', '3001.jpg', '9280.jpg', '3170.jpg', '9140.jpg', '9181.jpg', '2301.jpg', '2799.jpg', '2800.jpg', '3230.jpg', '6312.jpg', '6821.jpg', '3550.1.jpg', '9043.jpg', '2683.jpg', '9561.jpg', '3300.jpg', '3053.jpg', '2053.jpg', '3180.jpg', '2751.jpg', '9600.jpg', '9570.jpg', '9295.jpg', '9410.jpg', '6825.jpg', '3195.jpg', '3160.jpg', '9342.jpg', '2345.1.jpg', '9810.jpg', '3064.jpg', '9265.jpg', '2141.jpg', '9185.jpg', '3120.jpg', '9413.jpg', '6563.jpg', '9325.jpg', '9635.1.jpg', '9041.jpg', '6243.jpg', '9921.jpg', '9831.jpg', '3015.jpg', '9560.jpg', '6571.jpg', '2710.jpg', '2205.jpg', '9415.jpg', '2900.jpg', '9520.jpg', '2730.jpg', '9424.jpg', '9800.jpg', '3400.jpg', '9301.jpg', '9332.jpg', '9075.jpg', '9254.jpg'];
@@ -41,16 +42,21 @@
     return allConditions;
   }
 
+  //TODO: extend to more triplet types, ie AffAffNeu
   // creates a random foil for a single triplet
   function createFoil(curTrip, curTripCond) {
     switch(curTripCond) {
           case "NeuNeuNeu": 
+            //half last, half first
             break;
           case "AffAffAff":
+            //half last, half first
             break;
           case "NeuNeuAff":
+            //last
             break;
-          case "AffNeuNeu": 
+          case "AffNeuNeu":
+            //first
             break;
     }
   }
@@ -64,7 +70,7 @@
     for (let i = 0; i < totalNumTriplets; i++) {
       const curTripCond = allTripConditions[i].reduce((acc, cur) => acc + cur, "");
       const curTrip = allTriplets[i];
-      createFoil(curTrip, curTripCond)
+      createFoil(curTrip, curTripCond);
     }
   }
 
@@ -77,8 +83,8 @@
   timeline.push(testingInstructions);
   
   // TODO 
-  function getFoil(correctTriplet){
-    return correctTriplet;
+  function getFoil(correctTriplet, i){
+    return foils[i];
   }
 
   // TODO
@@ -133,7 +139,7 @@
 
   for (let i = 0; i < triplets.length; i++){
     const curTriplet = triplets[i];
-    const foil = getFoil(curTriplet);
+    const foil = getFoil(curTriplet, i);
     const ordering = (Math.random() > 0.5) ? ["correct", "foil"] : ["foil", "correct"];
   
     const tripA = (ordering[0] == "correct") ? curTriplet : foil;

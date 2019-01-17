@@ -5,6 +5,7 @@
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-slider-response.js"></script>
+    <script src="jspsych-html-double-slider-response.js"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
     <style>
       img {
@@ -18,6 +19,19 @@
 
   const timeline = [];
 
+  var trial0 = {
+    type: 'html-double-slider-response',
+    min: 0,
+    max: 10,
+    stimulus0: '<p>Running0</p>',
+    stimulus1: '<p>Running1</p>',
+    labels: ['healthy', 'unhealthy'],
+    prompt: "<p>How healthy/unhealthy is this activity?</p>"
+
+  };
+  timeline.push(trial0);
+
+/*
   var trial = {
     type: 'html-slider-response',
     min: 0,
@@ -36,10 +50,13 @@
    };
    
   timeline.push(rating);
-
+*/
 
   jsPsych.init({
     timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.displayData();
+      },
   });
 
   </script>

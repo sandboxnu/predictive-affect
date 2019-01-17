@@ -1,34 +1,185 @@
-/*
- * Example plugin template
- */
 
-jsPsych.plugins["PLUGIN-NAME"] = (function() {
+jsPsych.plugins["html-double-slider-response"] = (function() {
 
   var plugin = {};
 
   plugin.info = {
-    name: "PLUGIN-NAME",
+    name: "html-double-slider-response",
     parameters: {
-      parameter_name: {
-        type: jsPsych.plugins.parameterType.INT, // BOOL, STRING, INT, FLOAT, FUNCTION, KEYCODE, SELECT, HTML_STRING, IMAGE, AUDIO, VIDEO, OBJECT, COMPLEX
-        default: undefined
+      stimulus0: {
+        type: jsPsych.plugins.parameterType.HTML_STRING,
+        pretty_name: 'Stimulus0',
+        default: undefined,
+        description: 'The HTML string to be displayed'
       },
-      parameter_name: {
-        type: jsPsych.plugins.parameterType.IMAGE,
-        default: undefined
-      }
+      stimulus1: {
+        type: jsPsych.plugins.parameterType.HTML_STRING,
+        pretty_name: 'Stimulus1',
+        default: undefined,
+        description: 'The HTML string to be displayed'
+      },
+      min: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Min slider',
+        default: 0,
+        description: 'Sets the minimum value of the slider.'
+      },
+      max: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Max slider',
+        default: 100,
+        description: 'Sets the maximum value of the slider',
+      },
+      start: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Slider starting value',
+        default: 50,
+        description: 'Sets the starting value of the slider',
+      },
+      step: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Step',
+        default: 1,
+        description: 'Sets the step of the slider'
+      },
+      labels: {
+        type: jsPsych.plugins.parameterType.HTML_STRING,
+        pretty_name:'Labels',
+        default: [],
+        array: true,
+        description: 'Labels of the slider.',
+      },
+      button_label: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Button label',
+        default:  'Continue',
+        array: false,
+        description: 'Label of the button to advance.'
+      },
+      prompt: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Prompt',
+        default: null,
+        description: 'Any content here will be displayed below the slider.'
+      },
+      stimulus_duration: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Stimulus duration',
+        default: null,
+        description: 'How long to hide the stimulus.'
+      },
+      trial_duration: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Trial duration',
+        default: null,
+        description: 'How long to show the trial.'
+      },
+      response_ends_trial: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: 'Response ends trial',
+        default: true,
+        description: 'If true, trial will end when user makes a response.'
+      },
     }
   }
 
   plugin.trial = function(display_element, trial) {
 
-    // data saving
-    var trial_data = {
-      parameter_name: 'parameter value'
+    var html = '<div id="jspsych-html-slider-response-wrapper" style="margin: 100px 0px;">';
+    html += '<div id="jspsych-html-slider-response-stimulus">' + trial.stimulus0 + '</div>';
+    html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
+    html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-html-slider-response-response0"></input>';
+    html += '<div>'
+    for(var j=0; j < trial.labels.length; j++){
+      var width = 100/(trial.labels.length-1);
+      var left_offset = (j * (100 /(trial.labels.length - 1))) - (width/2);
+      html += '<div style="display: inline-block; position: absolute; left:'+left_offset+'%; text-align: center; width: '+width+'%;">';
+      html += '<span style="text-align: center; font-size: 80%;">'+trial.labels[j]+'</span>';
+      html += '</div>'
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    
+    html += '<div id="jspsych-html-slider-response-stimulus">' + trial.stimulus1 + '</div>';
+    html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
+    html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-html-slider-response-response1"></input>';
+    html += '<div>'
+    for(var j=0; j < trial.labels.length; j++){
+      var width = 100/(trial.labels.length-1);
+      var left_offset = (j * (100 /(trial.labels.length - 1))) - (width/2);
+      html += '<div style="display: inline-block; position: absolute; left:'+left_offset+'%; text-align: center; width: '+width+'%;">';
+      html += '<span style="text-align: center; font-size: 80%;">'+trial.labels[j]+'</span>';
+      html += '</div>'
+    }
+    html += '</div>';
+    html += '</div>';
+    html += '</div>';
+
+    if (trial.prompt !== null){
+      html += trial.prompt;
+    }
+
+    // add submit button
+    html += '<button id="jspsych-html-slider-response-next" class="jspsych-btn">'+trial.button_label+'</button>';
+
+    display_element.innerHTML = html;
+
+    var response = {
+      rt: null,
+      response0: null,
+      response1: null
     };
 
-    // end trial
-    jsPsych.finishTrial(trial_data);
+    display_element.querySelector('#jspsych-html-slider-response-next').addEventListener('click', function() {
+      // measure response time
+      var endTime = performance.now();
+      response.rt = endTime - startTime;
+      response.response0 = display_element.querySelector('#jspsych-html-slider-response-response0').value;
+      response.response1 = display_element.querySelector('#jspsych-html-slider-response-response1').value;
+
+      if(trial.response_ends_trial){
+        end_trial();
+      } else {
+        display_element.querySelector('#jspsych-html-slider-response-next').disabled = true;
+      }
+
+    });
+
+    function end_trial(){
+
+      jsPsych.pluginAPI.clearAllTimeouts();
+
+      // save data
+      var trialdata = {
+        "rt": response.rt,
+        "response0": response.response0,
+        "response1": response.response1,
+        "stimulus0": trial.stimulus0,
+        "stimulus1": trial.stimulus1,
+      };
+
+      display_element.innerHTML = '';
+
+      // next trial
+      jsPsych.finishTrial(trialdata);
+    }
+
+    if (trial.stimulus_duration !== null) {
+      jsPsych.pluginAPI.setTimeout(function() {
+        display_element.querySelector('#jspsych-html-slider-response-stimulus').style.visibility = 'hidden';
+      }, trial.stimulus_duration);
+    }
+
+    // end trial if trial_duration is set
+    if (trial.trial_duration !== null) {
+      jsPsych.pluginAPI.setTimeout(function() {
+        end_trial();
+      }, trial.trial_duration);
+    }
+
+    var startTime = performance.now();
   };
 
   return plugin;

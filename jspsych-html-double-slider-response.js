@@ -1,4 +1,3 @@
-
 jsPsych.plugins["html-double-slider-response"] = (function() {
 
   var plugin = {};
@@ -56,9 +55,15 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
         array: false,
         description: 'Label of the button to advance.'
       },
-      prompt: {
+      prompt0: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Prompt',
+        pretty_name: 'Prompt0',
+        default: null,
+        description: 'Any content here will be displayed below the slider.'
+      },
+      prompt1: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Prompt1',
         default: null,
         description: 'Any content here will be displayed below the slider.'
       },
@@ -85,7 +90,7 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    var html = '<div id="jspsych-html-slider-response-wrapper" style="margin: 100px 0px;">';
+    var html = '<div id="jspsych-html-slider-response-wrapper" style="margin: 30px 0px;">';
     html += '<div id="jspsych-html-slider-response-stimulus">' + trial.stimulus0 + '</div>';
     html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
     html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-html-slider-response-response0"></input>';
@@ -99,9 +104,16 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
     }
     html += '</div>';
     html += '</div>';
-    html += '</div>';
-
+    if (trial.prompt0 !== null){
+      html += '<div style="padding: 0px 30px;">' + trial.prompt0 + '</div>';
+    }
     
+    html += '</div>';
+ 
+    
+
+ 
+    html += '<div id="jspsych-html-slider-response-wrapper" style="margin: 30px 0px;">';
     html += '<div id="jspsych-html-slider-response-stimulus">' + trial.stimulus1 + '</div>';
     html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
     html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-html-slider-response-response1"></input>';
@@ -116,9 +128,10 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
     html += '</div>';
     html += '</div>';
     html += '</div>';
+    //html += '</div>';
 
-    if (trial.prompt !== null){
-      html += trial.prompt;
+    if (trial.prompt1 !== null){
+      html += trial.prompt1;
     }
 
     // add submit button

@@ -17,7 +17,7 @@
 
   const encodingInstructionsPanel1 = {
     type: 'html-keyboard-response',
-    stimulus: 'In the first part of the experiment, a series of images will appear on the screen, one after the other.\n\nThese images will have a grey patch on them.\n\nIf you see a grey patch on the left side of the picture, please press the button “J” as quickly as possible. If you see a grey patch on the right side of the picture, please press the button “K” as quickly as possible.\n\nPlease make sure you always use the same fingers to press the buttons. \n\nYou will see many images, so we will give you breaks periodically.\n\nIf at any point of this part of the experiment that you want to quit, please press "Q".\n\nTo continue, please press "K".',
+    stimulus: 'In the first part of the experiment, a series of images will appear on the screen, one after the other.\n\nThese images will have a grey patch on them.\n\nIf you see a grey patch on the left side of the picture, please press the button \"J\" as quickly as possible. If you see a grey patch on the right side of the picture, please press the button \“K\” as quickly as possible.\n\nPlease make sure you always use the same fingers to press the buttons. \n\nYou will see many images, so we will give you breaks periodically.\n\nIf at any point of this part of the experiment that you want to quit, please press "Q".\n\nTo continue, please press "K".',
     choices: ['k'],
   };
 
@@ -29,7 +29,7 @@
   
   timeline.push(encodingInstructionsPanel1);
   timeline.push(encodingInstructionsPanel2);
-
+  console.log(exemplars)
   // END INSTRUCTIONS
 
   jsPsych.init({

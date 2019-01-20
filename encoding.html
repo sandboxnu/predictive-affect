@@ -5,12 +5,15 @@
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
+    <script src="utils.js"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
   </head>
   <body></body>
   <script>
 
   const timeline = [];
+
+  // BEGIN INSTRUCTIONS
 
   const encodingInstructionsPanel1 = {
     type: 'html-keyboard-response',
@@ -27,13 +30,27 @@
   timeline.push(encodingInstructionsPanel1);
   timeline.push(encodingInstructionsPanel2);
 
-  const testingFinish = {
-    type: 'instructions',
-    pages: ['<div> <p> Thank you for finishing this part of the experiment. </p> <p>To continue, press "J".</p></div>'],
-    key_forward: 'j',
-  };
+  // END INSTRUCTIONS
 
-  timeline.push(testingFinish);
+  // BEGIN SETUP
+
+  // N = neutral, B = negative
+  const tripletTypes = ["NNN", "NBB", "BNN", "BBB"];
+
+  // current list of used stimuli
+  const currentList = [];
+
+  // create exemplars
+  const exemplars = {};
+  for (string of tripletTypes) {
+    console.log(string);
+    const exemplar = [];
+    for (letter of string) {
+      exemplar.push(randomlySelect(letter, currentList));
+    }
+    exemplars[string] = exemplar;
+  }
+  console.log(exemplars);
 
   jsPsych.init({
     timeline: timeline,

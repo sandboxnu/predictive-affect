@@ -25,3 +25,20 @@ const randomlySelect = (type, current) => {
   current.push(ret);
   return ret;
 };
+
+// N = neutral, B = negative
+const tripletTypes = ["NNN", "NBB", "BNN", "BBB"];
+
+// current list of used stimuli
+const currentList = [];
+
+// create exemplars
+const exemplars = {};
+for (i = 0; i < tripletTypes.length; i++) {
+  let string = tripletTypes[i];
+  const exemplar = [];
+  for (charIndex = 0; charIndex < string.length; charIndex++) {
+    exemplar.push(randomlySelect(string.charAt(charIndex), currentList));
+  }
+  exemplars[string] = exemplar;
+}

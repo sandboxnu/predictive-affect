@@ -5,40 +5,79 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
   plugin.info = {
     name: "html-double-slider-response",
     parameters: {
-      stimulus0: {
+      slider_count: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Slider Count',
+        default: 2,
+        description: 'Sets how many sliders will be displayed',
+      },
+      stimuli: {
         type: jsPsych.plugins.parameterType.HTML_STRING,
-        pretty_name: 'Stimulus0',
-        default: undefined,
+        pretty_name: 'Stimuli',
+        default: '',
+        array: true,
         description: 'The HTML string to be displayed'
       },
-      stimulus1: {
+      default_stimuli: {
         type: jsPsych.plugins.parameterType.HTML_STRING,
-        pretty_name: 'Stimulus1',
-        default: undefined,
+        pretty_name: 'Default Stimuli',
+        default: 'No default defined',
+        array: false,
         description: 'The HTML string to be displayed'
       },
       min: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Min slider',
+        default: [0, 0],
+        array: true,
+        description: 'Sets the minimum value of the slider.'
+      },
+      default_min: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Default Min slider',
         default: 0,
         description: 'Sets the minimum value of the slider.'
       },
       max: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Max slider',
-        default: 100,
+        default: [75, 150],
+        array: true,
         description: 'Sets the maximum value of the slider',
+      },
+      default_max: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Default Max slider',
+        default: 100,
+        array: false,
+        description: 'Sets the minimum value of the slider.'
       },
       start: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Slider starting value',
-        default: 50,
+        default: [25, 100],
+        array: true,
         description: 'Sets the starting value of the slider',
+      },
+      default_start: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Default Min slider',
+        default: 0,
+        array: false,
+        description: 'Sets the minimum value of the slider.'
       },
       step: {
         type: jsPsych.plugins.parameterType.INT,
         pretty_name: 'Step',
+        default: [5, 1],
+        array: true,
+        description: 'Sets the step of the slider'
+      },
+      default_step: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Default Step',
         default: 1,
+        array: false,
         description: 'Sets the step of the slider'
       },
       labels: {
@@ -48,6 +87,13 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
         array: true,
         description: 'Labels of the slider.',
       },
+      default_labels: {
+        type: jsPsych.plugins.parameterType.INT,
+        pretty_name: 'Default Step',
+        default: [],
+        array: true,
+        description: 'Sets the step of the slider'
+      },
       button_label: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Button label',
@@ -55,16 +101,18 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
         array: false,
         description: 'Label of the button to advance.'
       },
-      prompt0: {
+      prompt: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Prompt0',
-        default: null,
+        pretty_name: 'Prompt',
+        default: [],
+        array: true,
         description: 'Any content here will be displayed below the slider.'
       },
-      prompt1: {
+      default_prompt: {
         type: jsPsych.plugins.parameterType.STRING,
-        pretty_name: 'Prompt1',
-        default: null,
+        pretty_name: 'Prompt',
+        default: '',
+        array: false,
         description: 'Any content here will be displayed below the slider.'
       },
       stimulus_duration: {
@@ -90,48 +138,49 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    var html = '<div id="jspsych-html-slider-response-wrapper" style="margin: 30px 0px;">';
-    html += '<div id="jspsych-html-slider-response-stimulus">' + trial.stimulus0 + '</div>';
-    html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
-    html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-html-slider-response-response0"></input>';
-    html += '<div>'
-    for(var j=0; j < trial.labels.length; j++){
-      var width = 100/(trial.labels.length-1);
-      var left_offset = (j * (100 /(trial.labels.length - 1))) - (width/2);
-      html += '<div style="display: inline-block; position: absolute; left:'+left_offset+'%; text-align: center; width: '+width+'%;">';
-      html += '<span style="text-align: center; font-size: 80%;">'+trial.labels[j]+'</span>';
-      html += '</div>'
-    }
-    html += '</div>';
-    html += '</div>';
-    if (trial.prompt0 !== null){
-      html += '<div style="padding: 0px 30px;">' + trial.prompt0 + '</div>';
-    }
-    
-    html += '</div>';
- 
-    
+    var html = '';
 
- 
-    html += '<div id="jspsych-html-slider-response-wrapper" style="margin: 30px 0px;">';
-    html += '<div id="jspsych-html-slider-response-stimulus">' + trial.stimulus1 + '</div>';
-    html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
-    html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-html-slider-response-response1"></input>';
-    html += '<div>'
-    for(var j=0; j < trial.labels.length; j++){
-      var width = 100/(trial.labels.length-1);
-      var left_offset = (j * (100 /(trial.labels.length - 1))) - (width/2);
-      html += '<div style="display: inline-block; position: absolute; left:'+left_offset+'%; text-align: center; width: '+width+'%;">';
-      html += '<span style="text-align: center; font-size: 80%;">'+trial.labels[j]+'</span>';
-      html += '</div>'
-    }
-    html += '</div>';
-    html += '</div>';
-    html += '</div>';
-    //html += '</div>';
+    // Display trial.slider_count amount of sliders
+    for(var i = 0; i < trial.slider_count; i++) {
+      html += '<div id="jspsych-html-slider-response-wrapper"  style="margin: 30px 0px; width: 40em;">';
 
-    if (trial.prompt1 !== null){
-      html += trial.prompt1;
+      // Stimulus
+      html += '<div id="jspsych-html-slider-response-stimulus">';
+      html += (trial.stimuli.length >= i + 1)? trial.stimuli[i] : trial.default_stimuli;
+      html +=  '</div>';
+      
+      // Slider 
+      html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
+      html += '<input type="range" value="';
+      html += (trial.start.length >= i + 1)? trial.start[i] : '1'
+      html += '" min="';
+      html += (trial.min.length >= i)? trial.min[i] : trial.default_min;
+      html += '" max="';
+      html += (trial.max.length >= i + 1)? trial.max[i] : trial.default_max
+      html += '" step="';
+      html += trial.step[i]
+      html += '" style="width: 100%;" id="jspsych-html-slider-response-response' + i + '"></input>';
+      html += '<div>'
+
+      // Slider Labels
+      var labels_count = (trial.labels.length >= i + 1) ? trial.labels[i].length : trial.default_labels.length;
+      for(var j=0; j < labels_count; j++){
+        var width = 100/(labels_count-1);
+        var left_offset = (j * (100 /(labels_count - 1))) - (width/2);
+        html += '<div style="display: inline-block; position: absolute; left:'+left_offset+'%; text-align: center; width: '+width+'%;">';
+        html += '<span style="text-align: center; font-size: 80%;">';
+        html +=  (trial.labels.length >= i + 1)? trial.labels[i][j] : trial.default_labels[j];
+        html += '</span>';
+        html += '</div>'
+      }
+      html += '</div>';
+      html += '</div>';
+
+      // // Slider Prompt
+      html += '<div style="padding: 0px 30px;">';
+      html += (trial.prompt.length >= i + 1)? trial.prompt[i] : trial.default_prompt;
+      html +=  '</div>';
+      html += '</div>';
     }
 
     // add submit button
@@ -141,16 +190,17 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
 
     var response = {
       rt: null,
-      response0: null,
-      response1: null
+      responses: null
     };
 
     display_element.querySelector('#jspsych-html-slider-response-next').addEventListener('click', function() {
       // measure response time
       var endTime = performance.now();
       response.rt = endTime - startTime;
-      response.response0 = display_element.querySelector('#jspsych-html-slider-response-response0').value;
-      response.response1 = display_element.querySelector('#jspsych-html-slider-response-response1').value;
+      response.responses = [];
+      for(var i = 0; i < trial.slider_count ; i++) {
+        response.responses.push(display_element.querySelector('#jspsych-html-slider-response-response' + i).value)
+      }
 
       if(trial.response_ends_trial){
         end_trial();
@@ -167,10 +217,8 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       // save data
       var trialdata = {
         "rt": response.rt,
-        "response0": response.response0,
-        "response1": response.response1,
-        "stimulus0": trial.stimulus0,
-        "stimulus1": trial.stimulus1,
+        "responses": response.responses,
+        "stimuli": trial.stimuli,
       };
 
       display_element.innerHTML = '';

@@ -21,18 +21,22 @@
 
   var trial0 = {
     type: 'html-double-slider-response',
-    min: 0,
-    max: 9,
-    stimulus0: '<p>Running0</p>',
-    stimulus1: '<p>Running1</p>',
+    min: [0, 2],
+    max: [9,100],
+    stimuli: ['<img src="assets/stimuli/neutral/1114.jpg" style="max-width:75%;">',''],
+    step: [1, 1],
     labels: [],
-    prompt0: "<p>How healthy/unhealthy is this activity?</p>",
-    prompt1: "<p>How healthy/unhealthy is this activity?</p>",
+    slider_count: 2,
+    prompt: ["<p>How healthy/unhealthy is this activity?</p>", "<p>How healthy/unhealthy is this activity?</p>"]
 
   };
+  var arousalpics = [];
   for(i = 0; i < 10; i++){
-    trial0.labels.push('<img src="assets/stimuli/scale/arousal0.png" style="max-width:75%; filter: invert(100%);">');
+    arousalpics.push('<img src="assets/stimuli/scale/arousal0.png" style="max-width:75%; filter: invert(100%);">');
   }
+  trial0.labels.push(arousalpics);
+  trial0.labels.push(arousalpics);
+  
 
 
   timeline.push(trial0);

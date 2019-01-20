@@ -9,16 +9,15 @@ const negImages = ['9909.jpg', '7380.jpg', '9530.jpg', '3261.jpg', '6315.jpg', '
  * @param {*} current a list of the currently used images
  */
 const randomlySelect = (type, current) => {
-  console.log('something');
   let ret = '';
   let firstPass = true;
 
-  while (current.includes(ret) || firstPass) {
+  while (firstPass || current.includes(ret)) {
     firstPass = false;
     if (type === 'N') {
-      ret = neuImages[Math.random() * neuImages.length];
+      ret = neuImages[Math.round(Math.random() * neuImages.length)];
     } else if (type === 'B') {
-      ret = negImages[Math.random() * negImages.length];
+      ret = negImages[Math.round(Math.random() * negImages.length)];
     } else {
       return Error('randomlySelect only recieves types N and B, recieved ' + type);
     }

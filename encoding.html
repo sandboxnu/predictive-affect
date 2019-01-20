@@ -33,7 +33,6 @@
   // END INSTRUCTIONS
 
   // BEGIN SETUP
-
   // N = neutral, B = negative
   const tripletTypes = ["NNN", "NBB", "BNN", "BBB"];
 
@@ -42,19 +41,17 @@
 
   // create exemplars
   const exemplars = {};
-  for (string of tripletTypes) {
-    console.log(string);
+  for (i = 0; i < tripletTypes.length; i++) {
+    let string = tripletTypes[i];
     const exemplar = [];
-    for (letter of string) {
-      exemplar.push(randomlySelect(letter, currentList));
+    for (charIndex = 0; charIndex < string.length; charIndex++) {
+      exemplar.push(randomlySelect(string.charAt(charIndex), currentList));
     }
     exemplars[string] = exemplar;
   }
-  console.log(exemplars);
 
   jsPsych.init({
     timeline: timeline,
   });
-
   </script>
 </html>

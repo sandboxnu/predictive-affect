@@ -27,7 +27,6 @@
 
   const allTripConditions = generateConditions();
   const foils = createFoils();  
-  console.log(exemplars);
 
   // number of AAA triplets that have been tested on first A (no more than half of exemplarsPerTripletType)
   var AAACount = 0;
@@ -167,8 +166,6 @@
     timeline.push(tripletInstructions);
 
     for (let i = 0; i < imageStructLength; i++){
-
-      console.log(trip);
       const stimType = (isNegative(trip[i])) ? "negative" : "neutral";
       const imgName = "assets/stimuli/" + stimType + "/" + trip[i];
 
@@ -199,17 +196,28 @@
       }
     }
 
+    
+
     const askPrompt = {
       type: 'html-keyboard-response',
       stimulus: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
       choices: ['a', 'b'],
+      data: {tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
+      on_finish: function(data){
+        if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
+          ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))){
+            data.correct = 2;
+          } else {
+            data.correct = (sameCat) ? 1 : 0;
+          }
+      }
     };
 
     const textPrompt = {
       type: 'instructions',
       pages: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
       key_forward: 'enter',
-      data: {tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
+      
     };
 
     timeline.push(askPrompt);

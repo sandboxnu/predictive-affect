@@ -27,7 +27,7 @@ const randomlySelect = (type, current) => {
 };
 
 // N = neutral, B = negative
-const tripletTypes = ['NNN', 'NBB', 'BNN', 'BBB'];
+const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 
 // current list of used stimuli
 const currentList = [];

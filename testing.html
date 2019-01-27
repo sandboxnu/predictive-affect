@@ -18,9 +18,10 @@
 
   const exemplarsPerTripletType = 2;
   const numTripletTypes = tripletTypes.length;
-  const numExemplars = exemplarsPerTripletType * numTripletTypes;
 
-  //exemplars  = [['2101.jpg', '1908.jpg', '2191.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg']]; 
+  //const exemplars  = [['2101.jpg', '1908.jpg', '2191.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg']]; 
+  const numExemplars = exemplars.length;
+
   const foilDifferences = [];
 
   const totalNumImages = neuImages.length;
@@ -28,6 +29,7 @@
 
   const allTripConditions = generateConditions();
   const foils = createFoils();  
+  console.log(exemplars);
 
   // number of AAA triplets that have been tested on first A (no more than half of exemplarsPerTripletType)
   var AAACount = 0;
@@ -39,11 +41,11 @@
   /*
   DATA TO COLLECT
    + trial number, 
-   - image names
-   - option selected, 
+   + image names
+   + option selected, 
    - reaction time, 
-   - option order 
-   - type of the foil option (tested on the first or third item),
+   + option order 
+   + type of the foil option (tested on the first or third item),
    - type of the foil option (tested on the same or different category of the target item)
    - in/correctness of the response (0: chose the different category foil, 1: chose the same category foil, 2: chose the right foil)
   */
@@ -57,7 +59,7 @@
   function generateConditions(){
     const condition = [];
     const allConditions = [];
-    for (let i = 0; i < totalNumTriplets; i++) {
+    for (i in exemplars) {
       for (let j = 0; j < imageStructLength; j++) {
         condition[j] = (isNegative(exemplars[i][j])) ? "B" : "N";
       } 
@@ -91,7 +93,6 @@
     return newImg;
   }
 
-  //TODO: extend to more triplet types, ie AffAffNeu
   // creates a random foil for a single triplet
   function createFoil(curTrip, curTripCond) {
     var result = curTrip.slice();
@@ -127,7 +128,7 @@
   // creates a foil for every exemplar
   function createFoils(){
     result = [];
-    for(let i = 0; i < totalNumTriplets; i++){
+    for(i in exemplars){
       result[i] = createFoil(exemplars[i], allTripConditions[i]);
     }
     return result;
@@ -165,6 +166,7 @@
 
     for (let i = 0; i < imageStructLength; i++){
 
+      console.log(trip);
       const stimType = (isNegative(trip[i])) ? "negative" : "neutral";
       const imgName = "assets/stimuli/" + stimType + "/" + trip[i];
 
@@ -208,7 +210,8 @@
     
   }
 
-  for (let i = 0; i < numExemplars.length; i++){
+  // for every exemplar, display the exemplar and foil
+  for (i in exemplars){
     const curTriplet = exemplars[i];
     const foil = getFoil(curTriplet, i);
     const ordering = (Math.random() > 0.5) ? ["correct", "foil"] : ["foil", "correct"];
@@ -219,7 +222,6 @@
     displayTriplet(tripA, "A");
     displayTriplet(tripB, "B");
     promptCorrectTrip(tripA, tripB, ordering);
-
   }
 
   const testingFinish = {

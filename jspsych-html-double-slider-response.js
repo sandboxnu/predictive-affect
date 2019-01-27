@@ -142,11 +142,15 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
 
     // Display trial.slider_count amount of sliders
     for(var i = 0; i < trial.slider_count; i++) {
-      html += '<div id="jspsych-html-slider-response-wrapper"  style="margin: 30px 0px; width: 40em;">';
+      html += '<div id="jspsych-html-slider-response-wrapper"  style="margin: 60px 0px; width: 30em;">';
 
       // Stimulus
       html += '<div id="jspsych-html-slider-response-stimulus">';
       html += (trial.stimuli.length >= i + 1)? trial.stimuli[i] : trial.default_stimuli;
+      html +=  '</div>';
+      // // Slider Prompt
+      html += '<div style="padding: 0px 30px;">';
+      html += (trial.prompt.length >= i + 1)? trial.prompt[i] : trial.default_prompt;
       html +=  '</div>';
       
       // Slider 
@@ -160,9 +164,10 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       html += '" step="';
       html += trial.step[i]
       html += '" style="width: 100%;" id="jspsych-html-slider-response-response' + i + '"></input>';
-      html += '<div>'
+      // html += '<div>';
 
       // Slider Labels
+      // html += '<div>';
       var labels_count = (trial.labels.length >= i + 1) ? trial.labels[i].length : trial.default_labels.length;
       for(var j=0; j < labels_count; j++){
         var width = 100/(labels_count-1);
@@ -171,15 +176,10 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
         html += '<span style="text-align: center; font-size: 80%;">';
         html +=  (trial.labels.length >= i + 1)? trial.labels[i][j] : trial.default_labels[j];
         html += '</span>';
-        html += '</div>'
+        html += '</div>';
       }
+      // html += '</div>';
       html += '</div>';
-      html += '</div>';
-
-      // // Slider Prompt
-      html += '<div style="padding: 0px 30px;">';
-      html += (trial.prompt.length >= i + 1)? trial.prompt[i] : trial.default_prompt;
-      html +=  '</div>';
       html += '</div>';
     }
 

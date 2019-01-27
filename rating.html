@@ -28,39 +28,17 @@
     labels: [],
     slider_count: 2,
     prompt: ["<p>How healthy/unhealthy is this activity?</p>", "<p>How healthy/unhealthy is this activity?</p>"]
-
   };
+
   var arousalpics = [];
   for(i = 0; i < 10; i++){
     arousalpics.push('<img src="assets/stimuli/scale/arousal0.png" style="max-width:75%; filter: invert(100%);">');
   }
   trial0.labels.push(arousalpics);
   trial0.labels.push(arousalpics);
-  
-
 
   timeline.push(trial0);
 
-/*
-  var trial = {
-    type: 'html-slider-response',
-    min: 0,
-    max: 10,
-    stimulus: '<p>Running</p>',
-    labels: ['healthy', 'unhealthy'],
-    prompt: "<p>How healthy/unhealthy is this activity?</p>"
-  };
-  timeline.push(trial);
-
-  const rating = {
-		type: "image-keyboard-response",
-    stimulus: 'assets/stimuli/neutral/1114.jpg',
-		choices: ['j', 'k'],
-		prompt: '<p>Is this face happy? Y or N.</p>'
-   };
-   
-  timeline.push(rating);
-*/
 
   jsPsych.init({
     timeline: timeline,

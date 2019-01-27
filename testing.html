@@ -18,8 +18,6 @@
 
   const exemplarsPerTripletType = 2;
   const numTripletTypes = tripletTypes.length;
-
-  //const exemplars  = [['2101.jpg', '1908.jpg', '2191.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg'], ['9571.jpg', '9412.jpg', '2456.jpg']]; 
   const numExemplars = exemplars.length;
 
   const foilDifferences = [];
@@ -46,7 +44,7 @@
    - reaction time, 
    + option order 
    + type of the foil option (tested on the first or third item),
-   - type of the foil option (tested on the same or different category of the target item)
+   + type of the foil option (tested on the same or different category of the target item)
    - in/correctness of the response (0: chose the different category foil, 1: chose the same category foil, 2: chose the right foil)
   */
 
@@ -139,9 +137,13 @@
     return foils[i];
   }
 
-  // TODO
   function showFixationDot(){
-    return;
+    const whiteDot = {
+      type: 'image-keyboard-response',
+      stimulus: 'assets/whitedot.png',
+      trial_duration: 500,
+    };
+    timeline.push(whiteDot);
   }
 
   const testingInstructions = {
@@ -187,11 +189,16 @@
   // asks the user what the correct triplet is
   function promptCorrectTrip(tripA, tripB, ordering){
     var foilDif = 0;
+    var sameCat = false;
     for (let i = 0; i < imageStructLength; i++){
       if (tripA[i] != tripB[i]){
         foilDif = i + 1;
+        if (isNegative(tripA[i]) === isNegative(tripB[i])){
+          sameCat = true;
+        }
       }
     }
+
     const askPrompt = {
       type: 'html-keyboard-response',
       stimulus: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
@@ -202,7 +209,7 @@
       type: 'instructions',
       pages: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
       key_forward: 'enter',
-      data: {tripOrdering: ordering, foilDifference: foilDif},
+      data: {tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
     };
 
     timeline.push(askPrompt);

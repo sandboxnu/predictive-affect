@@ -40,6 +40,17 @@
   // number of images(one per exemplar) tested on same image type (no more than half of numExemplars)
   var sameCatTested = 0;
 
+  /*
+   + trial number, 
+   - image names
+   - option selected, 
+   - reaction time, 
+   - option order 
+   - type of the foil option (tested on the first or third item),
+   - type of the foil option (tested on the same or different category of the target item)
+   - in/correctness of the response (0: chose the different category foil, 1: chose the same category foil, 2: chose the right foil)
+  */
+
   // determines if a given image is negative 
   function isNegative(imgName){
      return negImages.includes(imgName);
@@ -116,6 +127,7 @@
     return result;
   }
 
+  // creates a foil for every exemplar
   function createFoils(){
     result = [];
     for(let i = 0; i < totalNumTriplets; i++){

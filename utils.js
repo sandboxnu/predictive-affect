@@ -19,7 +19,7 @@ const randomlySelect = (type, current) => {
     } else if (type === 'B') {
       ret = negImages[Math.round(Math.random() * negImages.length)];
     } else {
-      return Error('randomlySelect only recieves types N and B, recieved ' + type);
+      return Error(`randomlySelect only recieves types N and B, recieved ${type}`);
     }
   }
   current.push(ret);
@@ -32,13 +32,21 @@ const tripletTypes = ['NNN', 'NBB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
-// create exemplars
+/*
+Provided variables:
+exemplars
+  - object with string keys
+  - keys are "NNN1", "NNN2", "NBB1", "NBB2", etc to match tripletTypes (2 per triplet)
+*/
 const exemplars = {};
 for (let i = 0; i < tripletTypes.length; i += 1) {
-  const string = tripletTypes[i];
-  const exemplar = [];
-  for (let charIndex = 0; charIndex < string.length; charIndex += 1) {
-    exemplar.push(randomlySelect(string.charAt(charIndex), currentList));
+  const type = tripletTypes[i];
+  const exemplar1 = [];
+  const exemplar2 = [];
+  for (let charIndex = 0; charIndex < type.length; charIndex += 1) {
+    exemplar1.push(randomlySelect(type.charAt(charIndex), currentList));
+    exemplar2.push(randomlySelect(type.charAt(charIndex), currentList));
   }
-  exemplars[string] = exemplar;
-};
+  exemplars[`${type}1`] = exemplar1;
+  exemplars[`${type}2`] = exemplar2;
+}

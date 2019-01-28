@@ -35,18 +35,6 @@
   // number of images(one per exemplar) tested on same image type (no more than half of numExemplars)
   var sameCatTested = 0;
 
-  /*
-  DATA TO COLLECT
-   + trial number, 
-   + image names
-   + option selected, 
-   - reaction time, 
-   + option order 
-   + type of the foil option (tested on the first or third item),
-   + type of the foil option (tested on the same or different category of the target item)
-   - in/correctness of the response (0: chose the different category foil, 1: chose the same category foil, 2: chose the right foil)
-  */
-
   // determines if a given image is negative 
   function isNegative(imgName){
      return negImages.includes(imgName);
@@ -187,6 +175,8 @@
   function promptCorrectTrip(tripA, tripB, ordering){
     var foilDif = 0;
     var sameCat = false;
+    var foil = tripA.slice();
+    var correct = tripA.slice();
     for (let i = 0; i < imageStructLength; i++){
       if (tripA[i] != tripB[i]){
         foilDif = i + 1;
@@ -195,14 +185,17 @@
         }
       }
     }
-
-    
+    if (ordering[0] === "correct") {
+      foil = tripB.slice();
+    } else {
+      correct = tripB.slice();
+    }
 
     const askPrompt = {
       type: 'html-keyboard-response',
       stimulus: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
       choices: ['a', 'b'],
-      data: {tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
+      data: {foilTrip: foil, correctTrip: correct, tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
       on_finish: function(data){
         if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))){

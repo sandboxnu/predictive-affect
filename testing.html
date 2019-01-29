@@ -25,7 +25,6 @@
   const totalNumNegImages = negImages.length;
   const totalNumNeuImages = neuImages.length;
 
-  const allTripConditions = generateConditions();
   const foils = createFoils();  
 
   // number of AAA triplets that have been tested on first A (no more than half of exemplarsPerTripletType)
@@ -36,25 +35,17 @@
   var sameCatTested = 0;
 
   // determines if a given image is negative 
-  function isNegative(imgName){
+  const isNegative = (imgName) => {
      return negImages.includes(imgName);
   }
 
-  // creates the condition for every triplet
-  function generateConditions(){
-    const condition = [];
-    const allConditions = [];
-    for (i in exemplars) {
-      for (let j = 0; j < imageStructLength; j++) {
-        condition[j] = (isNegative(exemplars[i][j])) ? "B" : "N";
-      } 
-      allConditions[i] = condition;
-    } 
-    return allConditions;
+  const isNegativeImg = (img) => {
+    return (img.valence === "B");
   }
 
   // returns a random image 
-  function getRandImg(curType, curTrip){
+  const getRandImg = (curType, curTrip) => {
+    //var newImg = new image();
     var newImg = curTrip[0];
     var sameImages = negImages.slice();
     var oppositeImages = negImages.slice();
@@ -81,7 +72,7 @@
   }
 
   // creates a random foil for a single triplet
-  function createFoil(curTrip, curTripCond) {
+  const createFoil = (curTrip, curTripCond) => {
     var result = curTrip.slice();
     switch(curTripCond.join('')) {
         //half last, half first
@@ -113,7 +104,7 @@
   }
 
   // creates a foil for every exemplar
-  function createFoils(){
+  const createFoils = () => {
     result = [];
     for(i in exemplars){
       result[i] = createFoil(exemplars[i], allTripConditions[i]);
@@ -122,11 +113,11 @@
   }
 
   // returns the foil of the given triplet
-  function getFoil(correctTriplet, i){
+  const getFoil = (correctTriplet, i) => {
     return foils[i];
   }
 
-  function showFixationDot(){
+  const showFixationDot = () => {
     const whiteDot = {
       type: 'image-keyboard-response',
       stimulus: 'assets/whitedot.png',
@@ -144,7 +135,7 @@
   timeline.push(testingInstructions);
   
   // displys the instructions and three images for a given triplet
-  function displayTriplet(trip, ordering){
+  const displayTriplet = (trip, ordering) => {
     const instructText = "<div> <p> To see Group " + ordering + ", please press “J”. Three images will appear, one after the other.</p> </div>"; 
 
     const tripletInstructions = {
@@ -174,13 +165,14 @@
   }
 
   // asks the user what the correct triplet is
-  function promptCorrectTrip(tripA, tripB, ordering){
+  const promptCorrectTrip = (tripA, tripB, ordering) => {
     var foilDif = 0;
     var sameCat = false;
-    var foil = tripA.slice();
-    var correct = tripA.slice();
+    var foil = tripA.getImages().slice();
+    var correct = tripA.getImages().slice();
+
     for (let i = 0; i < imageStructLength; i++){
-      if (tripA[i] != tripB[i]){
+      if (tripA[i].fileName != tripB[i].fileName){
         foilDif = i + 1;
         if (isNegative(tripA[i]) === isNegative(tripB[i])){
           sameCat = true;
@@ -188,9 +180,9 @@
       }
     }
     if (ordering[0] === "correct") {
-      foil = tripB.slice();
+      foil = tripB.getImages().slice();
     } else {
-      correct = tripB.slice();
+      correct = tripB.getImages().slice();
     }
 
     const askPrompt = {
@@ -198,9 +190,9 @@
       stimulus: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
       choices: ['a', 'b'],
       data: {foilTrip: foil, correctTrip: correct, tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
-      on_finish: function(data){
+      on_finish: function(data) {
         if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
-          ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))){
+          ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
             data.correct = 2;
           } else {
             data.correct = (sameCat) ? 1 : 0;
@@ -220,7 +212,7 @@
   }
 
   // for every exemplar, display the exemplar and foil
-  for (i in exemplars){
+  for (i in exemplars) {
     const curTriplet = exemplars[i];
     const foil = getFoil(curTriplet, i);
     const ordering = (Math.random() > 0.5) ? ["correct", "foil"] : ["foil", "correct"];

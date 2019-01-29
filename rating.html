@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rating Phase</title>
+    <script src="node_modules/jspsych/jspsych.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-html-slider-response.js"></script>
+    <script src="/assets/plugins/jspsych-html-double-slider-response.js"></script>
+    <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
+    <style>
+      img {
+        width: 300px;
+      }
+    </style>
+  
+  </head>
+  <body></body>
+  <script>
+
+  const timeline = [];
+
+  var trial0 = {
+    type: 'html-double-slider-response',
+    min: [0, 2],
+    max: [9,100],
+    stimuli: ['<img src="assets/stimuli/neutral/1114.jpg" style="max-width:75%;">',''],
+    step: [1, 1],
+    labels: [],
+    slider_count: 2,
+    prompt: ["<p>How healthy/unhealthy is this activity?</p>", "<p>How healthy/unhealthy is this activity?</p>"]
+  };
+
+  var arousalpics = [];
+  for(i = 0; i < 10; i++){
+    arousalpics.push('<img src="assets/stimuli/scale/arousal0.png" style="max-width:75%; filter: invert(100%);">');
+  }
+  trial0.labels.push(arousalpics);
+  trial0.labels.push(arousalpics);
+
+  timeline.push(trial0);
+
+
+  jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.displayData();
+      },
+  });
+
+  </script>
+</html>

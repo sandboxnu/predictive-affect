@@ -22,8 +22,8 @@
 
   const foilDifferences = [];
 
-  const totalNumImages = neuImages.length;
-  const totalNumTriplets = exemplars.length;
+  const totalNumNegImages = negImages.length;
+  const totalNumNeuImages = neuImages.length;
 
   const allTripConditions = generateConditions();
   const foils = createFoils();  
@@ -58,11 +58,13 @@
     var newImg = curTrip[0];
     var sameImages = negImages.slice();
     var oppositeImages = negImages.slice();
+    var numImages = totalNumNeuImages;
 
     if (curType === "N") {
       oppositeImages = neuImages.slice();
     } else {
       sameImages = neuImages.slice();
+      numImages = totalNumNegImages;
     }
 
     if ((sameCatTested >= (numExemplars / 2)) || (Math.random() > 0.5)){
@@ -71,8 +73,8 @@
       oppositeImages = sameImages.slice();
     }
 
-    while(curTrip.includes(newImg)){
-      var rand = Math.round((Math.random() * (totalNumImages - 1)));
+    while(curTrip.includes(newImg)) {
+      var rand = Math.round((Math.random() * (numImages - 1)));
       newImg = sameImages[rand];
     }
     return newImg;
@@ -104,7 +106,7 @@
           break;
         //first  
         case "BNN":
-          result[1] = getRandomImg("B", curTrip)
+          result[1] = getRandomImg("B", curTrip);
           break;
     }
     return result;
@@ -210,7 +212,6 @@
       type: 'instructions',
       pages: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
       key_forward: 'enter',
-      
     };
 
     timeline.push(askPrompt);

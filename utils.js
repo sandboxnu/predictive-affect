@@ -8,7 +8,7 @@ const negImages = ['9909.jpg', '7380.jpg', '9530.jpg', '3261.jpg', '6315.jpg', '
  * @param {*} type 'N' for a neutral image, 'B' for a negative one
  * @param {*} current a list of the currently used images
  */
-const randomlySelect = (type, current) => {
+const randomlySelectImage = (type, current) => {
   let ret = '';
   let firstPass = true;
 
@@ -19,12 +19,24 @@ const randomlySelect = (type, current) => {
     } else if (type === 'B') {
       ret = negImages[Math.round(Math.random() * negImages.length)];
     } else {
-      return Error('randomlySelect only recieves types N and B, recieved ' + type);
+      return Error(`randomlySelect only recieves types N and B, recieved ${type}`);
     }
   }
   current.push(ret);
   return ret;
 };
+
+/**
+ * Returns one of the two arguments given, with a 50% probability of picking each one.
+ * @param {*} one the first thing
+ * @param {*} two the second thing
+ */
+const randomlyPickBetween = (one, two) => {
+  const random = Math.random();
+  return random <= 0.5 ? one : two;
+};
+
+const getImagePath = ({ valence, fileName }) => `assets/stimuli/${valence === 'B' ? 'negative' : 'neutral'}/${fileName}`;
 
 // N = neutral, B = negative
 const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
@@ -32,13 +44,51 @@ const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
-// create exemplars
+class Exemplar {
+  constructor(type) {
+    this.type = type;
+    this.images = [];
+    this.populateImages();
+  }
+
+  /**
+   * Gets the image at index i
+   * @param {*} index which image to select
+   * @returns the Image object
+   */
+  getImage(index) {
+    return this.images[index];
+  }
+
+  getImages() {
+    return this.images;
+  }
+
+  populateImages() {
+    const { type, images } = this;
+    for (let charIndex = 0; charIndex < type.length; charIndex += 1) {
+      const imgValence = type.charAt(charIndex);
+      const image = {
+        fileName: randomlySelectImage(imgValence, currentList),
+        dotPlacement: randomlyPickBetween('left', 'right'),
+        valence: imgValence,
+      };
+      images.push(image);
+    }
+  }
+}
+
+/*
+Provided variables:
+exemplars
+  - object with string keys
+  - keys are "NNN1", "NNN2", "NBB1", "NBB2", etc to match tripletTypes (2 per triplet)
+*/
 const exemplars = {};
 for (let i = 0; i < tripletTypes.length; i += 1) {
-  const string = tripletTypes[i];
-  const exemplar = [];
-  for (let charIndex = 0; charIndex < string.length; charIndex += 1) {
-    exemplar.push(randomlySelect(string.charAt(charIndex), currentList));
-  }
-  exemplars[string] = exemplar;
-};
+  const type = tripletTypes[i];
+  const exemplar1 = new Exemplar(type);
+  const exemplar2 = new Exemplar(type);
+  exemplars[`${type}1`] = exemplar1;
+  exemplars[`${type}2`] = exemplar2;
+}

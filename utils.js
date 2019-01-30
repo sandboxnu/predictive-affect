@@ -53,6 +53,13 @@ const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
+
+const copyImage = img => ({
+  filename: img.fileName,
+  dotPlacement: img.dotPlacement,
+  valence: img.valence,
+});
+
 /**
  * Exemplar is a set of 3 images also known as a triplet.
  */
@@ -61,6 +68,19 @@ class Exemplar {
     this.type = type;
     this.images = [];
     this.populateImages();
+  }
+
+  copy() {
+    if (this == null || typeof this !== 'object') return this;
+    const copy = new Exemplar(this.type);
+    for (let i = 0; i < 3; i += 1) {
+      copy.images[i] = copyImage(this.getImage(i));
+    }
+    return copy;
+  }
+
+  changeImageAt(index, img) {
+    this.images[index] = img;
   }
 
   /**

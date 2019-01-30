@@ -44,11 +44,26 @@ const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
+const copyImage = img => ({
+  filename: img.fileName,
+  dotPlacement: img.dotPlacement,
+  valence: img.valence,
+});
+
 class Exemplar {
   constructor(type) {
     this.type = type;
     this.images = [];
     this.populateImages();
+  }
+
+  copy() {
+    if (this == null || typeof this !== 'object') return this;
+    const copy = new Exemplar(this.type);
+    for (let i = 0; i < 3; i += 1) {
+      copy.images[i] = copyImage(this.getImage(i));
+    }
+    return copy;
   }
 
   /**
@@ -91,4 +106,6 @@ for (let i = 0; i < tripletTypes.length; i += 1) {
   const exemplar2 = new Exemplar(type);
   exemplars[`${type}1`] = exemplar1;
   exemplars[`${type}2`] = exemplar2;
+  console.log(exemplar1);
+  console.log(exemplar1.copy());
 }

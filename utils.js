@@ -66,6 +66,10 @@ class Exemplar {
     return copy;
   }
 
+  changeImageAt(index, img) {
+    this.images[index] = img;
+  }
+
   /**
    * Gets the image at index i
    * @param {*} index which image to select
@@ -106,6 +110,8 @@ for (let i = 0; i < tripletTypes.length; i += 1) {
   const exemplar2 = new Exemplar(type);
   exemplars[`${type}1`] = exemplar1;
   exemplars[`${type}2`] = exemplar2;
+
   console.log(exemplar1);
-  console.log(exemplar1.copy());
+  exemplar1.copy().changeImageAt(0, { fileName: 'hi' });
+  console.log(exemplar1);
 }

@@ -110,8 +110,4 @@ for (let i = 0; i < tripletTypes.length; i += 1) {
   const exemplar2 = new Exemplar(type);
   exemplars[`${type}1`] = exemplar1;
   exemplars[`${type}2`] = exemplar2;
-
-  console.log(exemplar1);
-  exemplar1.copy().changeImageAt(0, { fileName: 'hi' });
-  console.log(exemplar1);
 }

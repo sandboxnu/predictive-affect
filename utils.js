@@ -3,6 +3,15 @@ const neuImages = ['1908.jpg', '2101.jpg', '2191.jpg', '1945.jpg', '1390.jpg', '
 const negImages = ['9909.jpg', '7380.jpg', '9530.jpg', '3261.jpg', '6315.jpg', '9571.jpg', '9412.jpg', '2456.jpg', '9220.jpg', '3019.jpg', '2352.2.jpg', '9187.jpg', '2811.jpg', '9006.jpg', '9183.jpg', '9927.jpg', '2688.jpg', '9414.jpg', '3350.jpg', '3212.jpg', '3001.jpg', '9280.jpg', '3170.jpg', '9140.jpg', '9181.jpg', '2301.jpg', '2799.jpg', '2800.jpg', '3230.jpg', '6312.jpg', '6821.jpg', '3550.1.jpg', '9043.jpg', '2683.jpg', '9561.jpg', '3300.jpg', '3053.jpg', '2053.jpg', '3180.jpg', '2751.jpg', '9600.jpg', '9570.jpg', '9295.jpg', '9410.jpg', '6825.jpg', '3195.jpg', '3160.jpg', '9342.jpg', '2345.1.jpg', '9810.jpg', '3064.jpg', '9265.jpg', '2141.jpg', '9185.jpg', '3120.jpg', '9413.jpg', '6563.jpg', '9325.jpg', '9635.1.jpg', '9041.jpg', '6243.jpg', '9921.jpg', '9831.jpg', '3015.jpg', '9560.jpg', '6571.jpg', '2710.jpg', '2205.jpg', '9415.jpg', '2900.jpg', '9520.jpg', '2730.jpg', '9424.jpg', '9800.jpg', '3400.jpg', '9301.jpg', '9332.jpg', '9075.jpg', '9254.jpg'];
 
 /**
+ * Returns an html tag to display the image.
+ * @param {*} type 'N' for a neutral image, 'B' for a negative one
+ * @param {*} current a list of the currently used images
+ */
+const generateImageHTML = (image) => {
+  return `<img class="stimulus-image" src="${getImagePath(image)}" style="max-width:75%;">`;
+};
+
+/**
  * Returns a random image with the given type, and mutates the list given to ensure that
  * the same image is not selected twice.
  * @param {*} type 'N' for a neutral image, 'B' for a negative one
@@ -44,11 +53,34 @@ const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
+
+const copyImage = img => ({
+  filename: img.fileName,
+  dotPlacement: img.dotPlacement,
+  valence: img.valence,
+});
+
+/**
+ * Exemplar is a set of 3 images also known as a triplet.
+ */
 class Exemplar {
   constructor(type) {
     this.type = type;
     this.images = [];
     this.populateImages();
+  }
+
+  copy() {
+    if (this == null || typeof this !== 'object') return this;
+    const copy = new Exemplar(this.type);
+    for (let i = 0; i < 3; i += 1) {
+      copy.images[i] = copyImage(this.getImage(i));
+    }
+    return copy;
+  }
+
+  changeImageAt(index, img) {
+    this.images[index] = img;
   }
 
   /**
@@ -91,4 +123,16 @@ for (let i = 0; i < tripletTypes.length; i += 1) {
   const exemplar2 = new Exemplar(type);
   exemplars[`${type}1`] = exemplar1;
   exemplars[`${type}2`] = exemplar2;
+}
+
+
+/**
+ * Export modules for testing purposes
+ */
+if (typeof module !== 'undefined' && module.exports != null) {
+  module.exports = {
+    generateImageHTML, 
+    Exemplar,
+    exemplars, 
+    getImagePath};
 }

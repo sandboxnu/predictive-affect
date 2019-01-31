@@ -24,9 +24,9 @@ const randomlySelectImage = (type, current) => {
   while (firstPass || current.includes(ret)) {
     firstPass = false;
     if (type === 'N') {
-      ret = neuImages[Math.round((Math.random() * (neuImages.length - 1)))];
+      ret = neuImages[Math.round(Math.random() * neuImages.length)];
     } else if (type === 'B') {
-      ret = negImages[Math.round((Math.random() * (negImages.length - 1)))];
+      ret = negImages[Math.round(Math.random() * negImages.length - 1)];
     } else {
       return Error(`randomlySelect only recieves types N and B, recieved ${type}`);
     }

@@ -53,6 +53,7 @@ const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
+const isNegativeImg = ({ valence }) => (valence === 'B');
 
 const copyImage = img => ({
   fileName: img.fileName,

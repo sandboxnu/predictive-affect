@@ -107,15 +107,6 @@
 
   var foils = createFoils();
 
-  // determines if a given image is negative 
-  const isNegative = (imgName) => {
-     return negImages.includes(imgName);
-  };
-
-  const isNegativeImg = (img) => {
-    return (img.valence === 'B');
-  };
-
   // returns the foil of the given triplet
   const getFoil = (correctTriplet, i) => {
     return foils[i];
@@ -168,7 +159,7 @@
     for (let i = 0; i < imageStructLength; i++){
       if (tripA.getImage(i).fileName != tripB.getImage(i).fileName){
         foilDif = i + 1;
-        if (isNegative(tripA.getImage(i)) === isNegative(tripB.getImage(i))){
+        if (isNegativeImg(tripA.getImage(i)) === isNegativeImg(tripB.getImage(i))){
           sameCat = true;
         }
       }

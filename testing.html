@@ -25,8 +25,6 @@
   const totalNumNegImages = negImages.length;
   const totalNumNeuImages = neuImages.length;
 
-  const foils = createFoils();  
-
   // number of AAA triplets that have been tested on first A (no more than half of exemplarsPerTripletType)
   var AAACount = 0;
   // number of NNN triplets that have been tested on first N (no more than half of exemplarsPerTripletType)
@@ -34,97 +32,96 @@
   // number of images(one per exemplar) tested on same image type (no more than half of numExemplars)
   var sameCatTested = 0;
 
-  // determines if a given image is negative 
-  const isNegative = (imgName) => {
-     return negImages.includes(imgName);
-  }
-
-  const isNegativeImg = (img) => {
-    return (img.valence === "B");
-  }
-
   // returns a random image 
   const getRandImg = (curType, curTrip) => {
-    //var newImg = new image();
-    var newImg = curTrip[0];
+    // var newImg = new image();
+    var newImg = curTrip.getImage(0);
     var sameImages = negImages.slice();
     var oppositeImages = negImages.slice();
-    var numImages = totalNumNeuImages;
+    var numImages = totalNumNegImages;
+    var foilType = curType;
 
-    if (curType === "N") {
+    if (curType === 'N') {
       oppositeImages = neuImages.slice();
     } else {
       sameImages = neuImages.slice();
-      numImages = totalNumNegImages;
+      numImages = totalNumNeuImages;
     }
 
     if ((sameCatTested >= (numExemplars / 2)) || (Math.random() > 0.5)){
       var temp = sameImages.slice();
       sameImages = oppositeImages.slice();
-      oppositeImages = sameImages.slice();
+      foilType = (curType === 'N') ? 'N' : 'B';
+    } else {
+      foilType = (curType === 'N') ? 'B' : 'N';
     }
 
-    while(curTrip.includes(newImg)) {
+    while(curTrip.getImages().includes(newImg)) {
       var rand = Math.round((Math.random() * (numImages - 1)));
       newImg = sameImages[rand];
     }
-    return newImg;
-  }
 
-  // creates a random foil for a single triplet
-  const createFoil = (curTrip, curTripCond) => {
-    var result = curTrip.slice();
-    switch(curTripCond.join('')) {
+    return {fileName: newImg,
+            dotPlacement: 'N/A: foil',
+            valence: foilType,};
+  };
+
+  // creates a random foil for a single exemplar
+  const createFoil = (curTrip) => {
+    var result = curTrip.copy();
+    switch(curTrip.type) {
         //half last, half first
-        case "NNN": 
+        case 'NNN': 
           if ((NNNCount >= (exemplarsPerTripletType / 2) || (Math.random > 0.5))){
-            result[2] = getRandImg("N", curTrip);
+            result.changeImageAt(2, getRandImg('N', curTrip));
           } else {
-            result[1] = getRandImg("N", curTrip);
+            result.changeImageAt(1, getRandImg('N', curTrip));
           }
           break;
         //half last, half first  
-        case "BBB":
+        case 'BBB':
           if ((AAACount >= (exemplarsPerTripletType / 2)) || (Math.random > 0.5)){
-            result[2] = getRandImg("B", curTrip);
+            result.changeImageAt(2, getRandImg('B', curTrip));
           } else {
-            result[1] = getRandImg("N", curTrip);
+            result.changeImageAt(1, getRandImg('N', curTrip));
           }
           break;
         //last  
-        case "NNB":
-          result[2] = getRandomImg("B", curTrip);
+        case 'NNB':
+          result.changeImageAt(2, getRandImg('B', curTrip));
           break;
         //first  
-        case "BNN":
-          result[1] = getRandomImg("B", curTrip);
+        case 'BNN':
+          result.changeImageAt(1, getRandImg('B', curTrip));
           break;
     }
     return result;
-  }
+  };
 
   // creates a foil for every exemplar
   const createFoils = () => {
-    result = [];
+    var result = [];
     for(i in exemplars){
-      result[i] = createFoil(exemplars[i], allTripConditions[i]);
+      result[i] = createFoil(exemplars[i]);
     }
     return result;
-  }
+  };
+
+  var foils = createFoils();
+
+  // determines if a given image is negative 
+  const isNegative = (imgName) => {
+     return negImages.includes(imgName);
+  };
+
+  const isNegativeImg = (img) => {
+    return (img.valence === 'B');
+  };
 
   // returns the foil of the given triplet
   const getFoil = (correctTriplet, i) => {
     return foils[i];
-  }
-
-  const showFixationDot = () => {
-    const whiteDot = {
-      type: 'image-keyboard-response',
-      stimulus: 'assets/whitedot.png',
-      trial_duration: 500,
-    };
-    timeline.push(whiteDot);
-  }
+  };
 
   const testingInstructions = {
     type: 'instructions',
@@ -146,15 +143,14 @@
 
     timeline.push(tripletInstructions);
 
-    for (let i = 0; i < imageStructLength; i++){
-      const stimType = (isNegative(trip[i])) ? "negative" : "neutral";
-      const imgName = "assets/stimuli/" + stimType + "/" + trip[i];
+    for (let i = 0; i < imageStructLength; i++) {
+      const imgPath = getImagePath(trip.getImage(i)); 
 
-      showFixationDot();
+      showFixationDot(timeline);
 
       const imagePrompt = {
         type: 'image-keyboard-response',
-        stimulus: imgName,
+        stimulus: imgPath,
         choices: jsPsych.NO_KEYS,
         trial_duration: 1000,        
       };
@@ -162,7 +158,7 @@
       timeline.push(imagePrompt);
       
     }
-  }
+  };
 
   // asks the user what the correct triplet is
   const promptCorrectTrip = (tripA, tripB, ordering) => {
@@ -172,9 +168,9 @@
     var correct = tripA.getImages().slice();
 
     for (let i = 0; i < imageStructLength; i++){
-      if (tripA[i].fileName != tripB[i].fileName){
+      if (tripA.getImage(i).fileName != tripB.getImage(i).fileName){
         foilDif = i + 1;
-        if (isNegative(tripA[i]) === isNegative(tripB[i])){
+        if (isNegative(tripA.getImage(i)) === isNegative(tripB.getImage(i))){
           sameCat = true;
         }
       }

@@ -24,14 +24,25 @@ const randomlySelectImage = (type, current) => {
   while (firstPass || current.includes(ret)) {
     firstPass = false;
     if (type === 'N') {
-      ret = neuImages[Math.round(Math.random() * neuImages.length)];
+      const num = Math.floor((Math.random() * neuImages.length));
+      //console.log(num);
+      //console.log(neuImages.length);
+      ret = neuImages[num];
+      //console.log(ret);
     } else if (type === 'B') {
-      ret = negImages[Math.round(Math.random() * negImages.length - 1)];
+      ret = negImages[Math.floor((Math.random() * negImages.length + 1))];
     } else {
+      console.log("ERR");
       return Error(`randomlySelect only recieves types N and B, recieved ${type}`);
     }
   }
+
+  if (typeof ret === 'undefined') {
+    return randomlySelectImage(type, current);
+  }
+  console.log(current);
   current.push(ret);
+  console.log(ret);
   return ret;
 };
 

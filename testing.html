@@ -36,14 +36,11 @@
     var newImg = curTrip.getImage(0);
     var sameImages = negImages.slice();
     var oppositeImages = negImages.slice();
-    var numImages = totalNumNegImages;
-    var foilType = curType;
 
     if (curType === 'N') {
       oppositeImages = neuImages.slice();
     } else {
       sameImages = neuImages.slice();
-      numImages = totalNumNeuImages;
     }
 
     if ((sameCatTested >= (numExemplars / 2)) || (Math.random() > 0.5)){
@@ -54,9 +51,13 @@
       foilType = (curType === 'N') ? 'B' : 'N';
     }
 
+    const numImages = (foilType === 'N') ? totalNumNeuImages : totalNumNegImages;
+
     while(curTrip.getImages().includes(newImg)) {
-      var rand = Math.round((Math.random() * (numImages - 1)));
+      var rand = Math.floor((Math.random() * numImages));
+      
       newImg = sameImages[rand];
+     
     }
 
     return {fileName: newImg,
@@ -134,7 +135,6 @@
 
     for (let i = 0; i < imageStructLength; i++) {
       const imgPath = getImagePath(trip.getImage(i)); 
-
       showFixationDot(timeline);
 
       const imagePrompt = {

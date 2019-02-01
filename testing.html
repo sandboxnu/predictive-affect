@@ -32,7 +32,6 @@
 
   // returns a random image 
   const getRandImg = (curType, curTrip) => {
-    // var newImg = new image();
     var newImg = curTrip.getImage(0);
     var sameImages = negImages.slice();
     var oppositeImages = negImages.slice();
@@ -54,10 +53,7 @@
     const numImages = (foilType === 'N') ? totalNumNeuImages : totalNumNegImages;
 
     while(curTrip.getImages().includes(newImg)) {
-      var rand = Math.floor((Math.random() * numImages));
-      
-      newImg = sameImages[rand];
-     
+      newImg = sameImages[Math.floor((Math.random() * numImages))];
     }
 
     return {fileName: newImg,

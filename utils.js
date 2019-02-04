@@ -31,7 +31,6 @@ const randomlySelectImage = (type, current) => {
       return Error(`randomlySelect only recieves types N and B, recieved ${type}`);
     }
   }
-
   if (typeof ret === 'undefined') {
     return randomlySelectImage(type, current);
   }

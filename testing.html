@@ -30,7 +30,7 @@
   // number of images(one per exemplar) tested on same image type (no more than half of numExemplars)
   var sameCatTested = 0;
 
-  // returns a random image 
+  // returns a random image for a given foil
   const getRandImg = (curType, curTrip) => {
     var newImg = curTrip.getImage(0);
     var sameImages = negImages.slice();
@@ -151,6 +151,7 @@
     var sameCat = false;
     var foil = tripA.getImages().slice();
     var correct = tripA.getImages().slice();
+    const promptText = '<div><p>Using the keyboard, if the image sequence in Option A looked more familiar, press “A”.</p><p>If the image sequence in Option B looked more familiar, press “B”.</p> <p>To continue, press "Enter".</p></div>';
 
     for (let i = 0; i < imageStructLength; i++){
       if (tripA.getImage(i).fileName != tripB.getImage(i).fileName){
@@ -168,7 +169,7 @@
 
     const askPrompt = {
       type: 'html-keyboard-response',
-      stimulus: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
+      stimulus: promptText, 
       choices: ['a', 'b'],
       data: {foilTrip: foil, correctTrip: correct, tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
       on_finish: function(data) {
@@ -183,7 +184,7 @@
 
     const textPrompt = {
       type: 'instructions',
-      pages: ['<div><p>Using the mouse, if the image sequence in Option A looked more familiar, click “A”.</p><p>If the image sequence in Option B looked more familiar, click “B”.</p> <p>To continue, press "Enter".</p></div>'], 
+      pages: [promptText], 
       key_forward: 'enter',
     };
 
@@ -195,7 +196,7 @@
   for (i in exemplars) {
     const curTriplet = exemplars[i];
     const foil = getFoil(curTriplet, i);
-    const ordering = (Math.random() > 0.5) ? ["correct", "foil"] : ["foil", "correct"];
+    const ordering = randomlyPickBetween(["correct", "foil"], ["foil", "correct"]);
   
     const tripA = (ordering[0] === "correct") ? curTriplet : foil;
     const tripB = (tripA === curTriplet) ? foil : curTriplet;

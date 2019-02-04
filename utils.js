@@ -1,13 +1,13 @@
 /* CONSTANTS */
 
 const param = {};
-param['img_x'] = 640;
-param['img_y'] = 480;
-param['grey_radius'] = 25;
-param['display_time'] = 1;
-param['fixation_time'] = 0.5;
-param['trialsPerEncodingBlock'] = 144;
-param['encodingBlocks'] = 6;
+param.img_x = 640;
+param.img_y = 480;
+param.grey_radius = 25;
+param.display_time = 1;
+param.fixation_time = 0.5;
+param.trialsPerEncodingBlock = 144;
+param.encodingBlocks = 6;
 
 const whiteDotTrial = {
   type: 'html-keyboard-response',
@@ -78,8 +78,8 @@ const getImagePath = ({ valence, fileName }) => `assets/stimuli/${valence === 'B
 const generateImageHTML = image => `
 <div class="img-overlay-wrap">
 <img src="${getImagePath(image)}">
-<svg height="${param['img_x']}" width="${param['img_y']}">
-  <circle cx="70" cy="70" r="${param['grey_radius']}" fill="#a9a9a9" fill-opacity="0.4" />
+<svg height="${param.img_x}" width="${param.img_y}">
+  <circle cx="${image.greyDotX}" cy="${image.greyDotY}" r="${param.grey_radius}" fill="#a9a9a9" fill-opacity="0.4" />
 </svg> 
 </div>
 `;
@@ -149,6 +149,8 @@ class Exemplar {
         fileName: randomlySelectImage(imgValence, currentList),
         dotPlacement: randomlyPickBetween('left', 'right'),
         valence: imgValence,
+        greyDotX: Math.random() * param.img_x,
+        greyDotY: Math.random() * param.img_y,
       };
       images.push(image);
     }
@@ -189,5 +191,8 @@ if (typeof module !== 'undefined' && module.exports != null) {
     Exemplar,
     exemplars,
     getImagePath,
+    createExemplarCounts,
+    removeElement,
+    randomlyPickFromList,
   };
 }

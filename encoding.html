@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Testing Phase</title>
+    <title>Encoding Phase</title>
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
+    <script src="constants.js" type="module"></script>
     <script src="utils.js"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
   </head>
@@ -30,6 +31,39 @@
   timeline.push(encodingInstructionsPanel1);
   timeline.push(encodingInstructionsPanel2);
   // END INSTRUCTIONS
+  
+  // CREATE TIMELINE
+  
+  for (block = 0; block < param['encodingBlocks']; block += 1) {
+    exemplarCounts = createExemplarCounts();
+    exemplarNames = Object.keys(exemplarCounts);
+    for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
+      // PUSH TRIAL
+      timeline.push(whiteDotTrial);
+      // SELECT AN EXEMPLAR
+      const curExemplar = randomlyPickFromList(exemplarNames);
+      exemplarCounts[curExemplar] -= 1;
+      if (exemplarCounts[curExemplar] = 0) {
+        removeElement(exemplarNames, curExemplar);
+      }
+      // DISPLAY ITS IMAGES
+      for (let subTrial = 0; subTrial < exemplars[curExemplar].getImages().length; subTrial += 1) {
+        const image = exemplars[curExemplar].getImage(subTrial);
+        const curTrial = {
+          type: 'html-keyboard-response',
+          stimulus: generateImageHTML(image),
+          choices: ['j','k'],
+          trial_duration: param['display_time'] * 1000,
+        }
+        timeline.push(curTrial);
+        trial += 1;
+      }
+    }
+        if (block != param['encodingBlock']) {
+          timeline.push(whiteDotTrial);
+        }
+      
+  }
 
   jsPsych.init({
     timeline: timeline,

@@ -111,6 +111,7 @@ const showFixationDot = (timeline) => {
     type: 'html-keyboard-response',
     stimulus: '<img class="white-dot" src="assets/whitedot.png" style="transform: scale(0.2, 0.2)">',
     trial_duration: 500,
+    choices: jsPsych.NO_KEYS,
   };
   timeline.push(whiteDot);
 };
@@ -159,9 +160,9 @@ class Exemplar {
       const image = {
         fileName: randomlySelectImage(imgValence, currentList),
         valence: imgValence,
-        greyDotX: Math.random() * (param.img_x - param.grey_radius)
+        greyDotX: Math.random() * (param.img_x - param.grey_radius * 2)
                     + param.grey_radius,
-        greyDotY: Math.random() * (param.img_y - param.grey_radius)
+        greyDotY: Math.random() * (param.img_y - param.grey_radius * 2)
                     + param.grey_radius,
       };
       image.dotPlacement = image.greyDotX < param.img_x / 2 ? 'left' : 'right';

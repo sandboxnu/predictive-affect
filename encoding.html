@@ -40,16 +40,16 @@
     exemplarNames = Object.keys(exemplarCounts);
     for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
       // PUSH TRIAL
-      timeline.push(whiteDotTrial);
+      
       // SELECT AN EXEMPLAR
       const curExemplar = randomlyPickFromList(exemplarNames);
-      console.log(curExemplar)
       exemplarCounts[curExemplar] -= 1;
       if (exemplarCounts[curExemplar] = 0) {
         removeElement(exemplarNames, curExemplar);
       }
       // DISPLAY ITS IMAGES
       for (let subTrial = 0; subTrial < exemplars[curExemplar].getImages().length; subTrial += 1) {
+        showFixationDot(timeline)
         const image = exemplars[curExemplar].getImage(subTrial);
         const curTrial = {
           type: 'html-keyboard-response',
@@ -63,7 +63,7 @@
       }
     }
     if (block != param['encodingBlock']) {
-      timeline.push(whiteDotTrial); // TODO change this to actually have an intertrial break
+      showFixationDot(timeline); // TODO change this to actually have an intertrial break
     }
       
   }

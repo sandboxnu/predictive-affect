@@ -43,6 +43,7 @@
       timeline.push(whiteDotTrial);
       // SELECT AN EXEMPLAR
       const curExemplar = randomlyPickFromList(exemplarNames);
+      console.log(curExemplar)
       exemplarCounts[curExemplar] -= 1;
       if (exemplarCounts[curExemplar] = 0) {
         removeElement(exemplarNames, curExemplar);
@@ -55,14 +56,15 @@
           stimulus: generateImageHTML(image),
           choices: ['j','k'],
           trial_duration: param['display_time'] * 1000,
+          response_ends_trial: false,
         }
         timeline.push(curTrial);
         trial += 1;
       }
     }
-        if (block != param['encodingBlock']) {
-          timeline.push(whiteDotTrial);
-        }
+    if (block != param['encodingBlock']) {
+      timeline.push(whiteDotTrial); // TODO change this to actually have an intertrial break
+    }
       
   }
 

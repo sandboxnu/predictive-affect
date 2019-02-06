@@ -4,7 +4,7 @@ const param = {};
 param.img_x = 640;
 param.img_y = 480;
 param.grey_radius = 25;
-param.display_time = 1;
+param.display_time = 1.5;
 param.fixation_time = 0.5;
 param.trialsPerEncodingBlock = 144;
 param.encodingBlocks = 6;
@@ -12,7 +12,7 @@ param.encodingBlocks = 6;
 const whiteDotTrial = {
   type: 'html-keyboard-response',
   stimulus: '<p>hi</p>',
-  trial_duration: param['fixation_time'],
+  trial_duration: param['fixation_time'] * 1000,
 };
 
 // Utilities for use in the html scripts
@@ -78,8 +78,8 @@ const getImagePath = ({ valence, fileName }) => `assets/stimuli/${valence === 'B
 const generateImageHTML = image => `
 <div class="img-overlay-wrap">
 <img src="${getImagePath(image)}">
-<svg height="${param.img_x}" width="${param.img_y}">
-  <circle cx="${image.greyDotX}" cy="${image.greyDotY}" r="${param.grey_radius}" fill="#a9a9a9" fill-opacity="0.4" />
+<svg height="${param.img_y}" width="${param.img_x}">
+  <circle cx="${image.greyDotX}" cy="${image.greyDotY}" r="${param.grey_radius}" fill="#808080" fill-opacity="0.6" />
 </svg> 
 </div>
 `;
@@ -103,6 +103,8 @@ const copyImage = img => ({
   filename: img.fileName,
   dotPlacement: img.dotPlacement,
   valence: img.valence,
+  greyDotX: img.greyDotX,
+  greyDotY: img.greyDotY,
 });
 
 /**
@@ -137,6 +139,7 @@ class Exemplar {
     return this.images[index];
   }
 
+  // TODO both these methods should copy
   getImages() {
     return this.images;
   }
@@ -149,8 +152,10 @@ class Exemplar {
         fileName: randomlySelectImage(imgValence, currentList),
         dotPlacement: randomlyPickBetween('left', 'right'),
         valence: imgValence,
-        greyDotX: Math.random() * param.img_x,
-        greyDotY: Math.random() * param.img_y,
+        greyDotX: Math.random() * (param.img_x - Math.ceil(param.grey_radius / 2))
+                    - Math.ceil(param.grey_radius / 2),
+        greyDotY: Math.random() * (param.img_y - Math.ceil(param.grey_radius / 2))
+        - Math.ceil(param.grey_radius / 2),
       };
       images.push(image);
     }

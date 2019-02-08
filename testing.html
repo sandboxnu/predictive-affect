@@ -15,21 +15,7 @@
   // constants
   const timeline = [];
   const imageStructLength = 3;
-
-  const exemplarsPerTripletType = 2;
-  const numTripletTypes = tripletTypes.length;
-  const numExemplars = exemplars.length;
-
-  const totalNumNegImages = negImages.length;
-  const totalNumNeuImages = neuImages.length;
-
-  // number of AAA triplets that have been tested on first A (no more than half of exemplarsPerTripletType)
-  var AAACount = 0;
-  // number of NNN triplets that have been tested on first N (no more than half of exemplarsPerTripletType)
-  var NNNCount = 0;
-  // number of images(one per exemplar) tested on same image type (no more than half of numExemplars)
-  var sameCatTested = 0;
-
+  
   const foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
   const foilTestedType = [false, true, false, true, false, false, true, true, true, false, false, true,];
 
@@ -67,12 +53,10 @@
   const createFoils = () => {
     var result = [];
     var count = 0;
-
     for(i in exemplars) {
       result[i] = createFoil(exemplars[i], count);
       count++;
     }
-    
     return result;
   };
 

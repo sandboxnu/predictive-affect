@@ -109,6 +109,10 @@ class Exemplar {
     return this.images;
   }
 
+  getImageNames() {
+    return this.images.map(x => x.fileName);
+  }
+
   populateImages() {
     const { type, images } = this;
     for (let charIndex = 0; charIndex < type.length; charIndex += 1) {

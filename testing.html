@@ -30,75 +30,49 @@
   // number of images(one per exemplar) tested on same image type (no more than half of numExemplars)
   var sameCatTested = 0;
 
-  // returns a random image for a given foil
-  const getRandImg = (curType, curTrip) => {
-    var newImg = curTrip.getImage(0);
-    var sameImages = negImages.slice();
-    var oppositeImages = negImages.slice();
-
-    if (curType === 'N') {
-      oppositeImages = neuImages.slice();
-    } else {
-      sameImages = neuImages.slice();
-    }
-
-    if ((sameCatTested >= (numExemplars / 2)) || (Math.random() > 0.5)){
-      var temp = sameImages.slice();
-      sameImages = oppositeImages.slice();
-      foilType = (curType === 'N') ? 'N' : 'B';
-    } else {
-      foilType = (curType === 'N') ? 'B' : 'N';
-    }
-
-    const numImages = (foilType === 'N') ? totalNumNeuImages : totalNumNegImages;
-
-    while(curTrip.getImages().includes(newImg)) {
-      newImg = sameImages[Math.floor((Math.random() * numImages))];
-    }
-
-    return {fileName: newImg,
-            dotPlacement: 'N/A: foil',
-            valence: foilType,};
-  };
+  const foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
+  const foilTestedType = [false, true, false, true, false, false, true, true, true, false, false, true,];
 
   // creates a random foil for a single exemplar
-  const createFoil = (curTrip) => {
+  const createFoil = (curTrip, i) => {
     var result = curTrip.copy();
-    switch(curTrip.type) {
-        //half last, half first
-        case 'NNN': 
-          if ((NNNCount >= (exemplarsPerTripletType / 2) || (Math.random > 0.5))){
-            result.changeImageAt(2, getRandImg('N', curTrip));
-          } else {
-            result.changeImageAt(1, getRandImg('N', curTrip));
-          }
-          break;
-        //half last, half first  
-        case 'BBB':
-          if ((AAACount >= (exemplarsPerTripletType / 2)) || (Math.random > 0.5)){
-            result.changeImageAt(2, getRandImg('B', curTrip));
-          } else {
-            result.changeImageAt(1, getRandImg('N', curTrip));
-          }
-          break;
-        //last  
-        case 'NNB':
-          result.changeImageAt(2, getRandImg('B', curTrip));
-          break;
-        //first  
-        case 'BNN':
-          result.changeImageAt(1, getRandImg('B', curTrip));
-          break;
+
+    const numImageTested = foilTestedOn[i];
+    const typeTested = foilTestedType[i];
+    const curType = curTrip.getImage(numImageTested).valence;
+
+    const foilType = (curType === 'N') ? 'B' : 'N';
+    var newType = (typeTested) ? foilType : curType;
+    
+    const imgs = (newType === 'N') ? neuImages.slice() : negImages.slice();
+
+    var newImg;
+    var newFile = result.getImage(0).fileName;
+
+    while(curTrip.getImageNames().includes(newFile)) {
+      newFile = imgs[Math.floor((Math.random() * imgs.length))];
     }
+
+    newImg = {fileName: newFile,
+            dotPlacement: 'N/A: foil',
+            valence: newType,};
+
+    result.type[numImageTested] = newType;
+    result.changeImageAt(numImageTested, newImg);
+
     return result;
   };
 
   // creates a foil for every exemplar
   const createFoils = () => {
     var result = [];
-    for(i in exemplars){
-      result[i] = createFoil(exemplars[i]);
+    var count = 0;
+
+    for(i in exemplars) {
+      result[i] = createFoil(exemplars[i], count);
+      count++;
     }
+    
     return result;
   };
 

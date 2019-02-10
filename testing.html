@@ -124,7 +124,7 @@
       type: 'html-keyboard-response',
       stimulus: promptText, 
       choices: ['a', 'b'],
-      data: {tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat, first_option: tripA.getImageNames(), second_option: tripB.getImageNames()},
+      data: {triplet_ordering: ordering, foil_difference: foilDif, same_category_tested: sameCat, first_option: tripA.getImageNames(), second_option: tripB.getImageNames()},
       on_finish: function(data) {
           if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
@@ -168,13 +168,10 @@
 
   timeline.push(testingFinish);
 
-  
-
   jsPsych.init({
     timeline: timeline,
     on_finish: function() {
-        jsPsych.data.get().ignore('internal_node_id').ignore('time_elapsed').filterCustom(function(trial){
-          return (trial.foilDifference);}).ignore('tria_type').ignore('stimulus').ignore('view_history').localSave('csv','testing_output.csv');
+        jsPsych.data.get().filterCustom(function(trial){return (trial.foil_difference);}).ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
         jsPsych.data.displayData();
       }
   });

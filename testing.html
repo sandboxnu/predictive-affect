@@ -119,24 +119,20 @@
         }
       }
     }
-    if (ordering[0] === "correct") {
-      foil = tripB.getImages().slice();
-    } else {
-      correct = tripB.getImages().slice();
-    }
 
     const askPrompt = {
       type: 'html-keyboard-response',
       stimulus: promptText, 
       choices: ['a', 'b'],
-      data: {foilTrip: foil, correctTrip: correct, tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat},
+      data: {tripOrdering: ordering, foilDifference: foilDif, sameCategoryTested: sameCat, first_option: tripA.getImageNames(), second_option: tripB.getImageNames()},
       on_finish: function(data) {
-        if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
+          if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
             data.correct = 2;
           } else {
             data.correct = (sameCat) ? 1 : 0;
           }
+          data.key_press = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
       }
     };
 
@@ -172,12 +168,18 @@
 
   timeline.push(testingFinish);
 
+  
+
   jsPsych.init({
     timeline: timeline,
     on_finish: function() {
+        jsPsych.data.get().ignore('internal_node_id').ignore('time_elapsed').filterCustom(function(trial){
+          return (trial.foilDifference);}).ignore('tria_type').ignore('stimulus').ignore('view_history').localSave('csv','testing_output.csv');
         jsPsych.data.displayData();
       }
   });
+
+  
 
   </script>
 </html>

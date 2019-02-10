@@ -48,7 +48,12 @@
       step: [1, 1],
       labels: [],
       slider_count: 2,
-      prompt: ["<p>What Valence level would you rate this image?</p>", "<p>What level of arousal would you rate this image?</p>"]
+      prompt: ["<p>What Valence level would you rate this image?</p>", "<p>What level of arousal would you rate this image?</p>"],
+      on_finish: (data) => {
+        data.Valence = data.responses[0];
+        data.Arousal = data.responses[1];
+        data.ImageName = image.fileName;
+      }
     };
     var arousalpics = [];
     for(i = 0; i < 9; i++){
@@ -66,6 +71,7 @@
   jsPsych.init({
     timeline: timeline,
     on_finish: function() {
+        jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
         jsPsych.data.displayData();
       },
   });

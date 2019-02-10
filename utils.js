@@ -24,12 +24,15 @@ const randomlySelectImage = (type, current) => {
   while (firstPass || current.includes(ret)) {
     firstPass = false;
     if (type === 'N') {
-      ret = neuImages[Math.round(Math.random() * neuImages.length)];
+      ret = neuImages[Math.floor((Math.random() * neuImages.length))];
     } else if (type === 'B') {
-      ret = negImages[Math.round(Math.random() * negImages.length)];
+      ret = negImages[Math.floor((Math.random() * negImages.length + 1))];
     } else {
       return Error(`randomlySelect only recieves types N and B, recieved ${type}`);
     }
+  }
+  if (typeof ret === 'undefined') {
+    return randomlySelectImage(type, current);
   }
   current.push(ret);
   return ret;
@@ -53,12 +56,22 @@ const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 // current list of used stimuli
 const currentList = [];
 
+const isNegativeImg = ({ valence }) => (valence === 'B');
 
 const copyImage = img => ({
-  filename: img.fileName,
+  fileName: img.fileName,
   dotPlacement: img.dotPlacement,
   valence: img.valence,
 });
+
+const showFixationDot = (timeline) => {
+  const whiteDot = {
+    type: 'html-keyboard-response',
+    stimulus: '<img class="white-dot" src="assets/whitedot.png" style="transform: scale(0.5, 0.5)">',
+    trial_duration: 500,
+  };
+  timeline.push(whiteDot);
+};
 
 /**
  * Exemplar is a set of 3 images also known as a triplet.
@@ -96,6 +109,10 @@ class Exemplar {
     return this.images;
   }
 
+  getImageNames() {
+    return this.images.map(x => x.fileName);
+  }
+
   populateImages() {
     const { type, images } = this;
     for (let charIndex = 0; charIndex < type.length; charIndex += 1) {
@@ -131,8 +148,9 @@ for (let i = 0; i < tripletTypes.length; i += 1) {
  */
 if (typeof module !== 'undefined' && module.exports != null) {
   module.exports = {
-    generateImageHTML, 
+    generateImageHTML,
     Exemplar,
-    exemplars, 
-    getImagePath};
+    exemplars,
+    getImagePath,
+  };
 }

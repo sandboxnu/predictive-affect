@@ -5,7 +5,9 @@
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-slider-response.js"></script>
-    <script src="/assets/plugins/jspsych-html-double-slider-response.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
+    <script src="assets/plugins/jspsych-html-double-slider-response.js"></script>
+    <script src="utils.js"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
     <style>
       img {
@@ -19,26 +21,47 @@
 
   const timeline = [];
 
-  var trial0 = {
-    type: 'html-double-slider-response',
-    min: [0, 2],
-    max: [9,100],
-    stimuli: ['<img src="assets/stimuli/neutral/1114.jpg" style="max-width:75%;">',''],
-    step: [1, 1],
-    labels: [],
-    slider_count: 2,
-    prompt: ["<p>How healthy/unhealthy is this activity?</p>", "<p>How healthy/unhealthy is this activity?</p>"]
-  };
 
-  var arousalpics = [];
-  for(i = 0; i < 10; i++){
-    arousalpics.push('<img src="assets/stimuli/scale/arousal0.png" style="max-width:75%; filter: invert(100%);">');
-  }
-  trial0.labels.push(arousalpics);
-  trial0.labels.push(arousalpics);
+  const testingInstructions = {
+    type: 'instructions',
+    pages: ['For this part of the experiment, we will show you the images you saw earlier.\n\nFor each image, you will rate how it made you feel.\n\nNote that you will not be able to quit the experiment during this part of the experiment. If you do not wish to continue, please press “Q” to quit now.\n\nTo continue, please press "J".'],
+    key_forward: 'j',
+   };
 
-  timeline.push(trial0);
+   timeline.push(testingInstructions);
+  
 
+  var allImagesShown = [];
+
+  tripletTypes.forEach(function(type) {
+    allImagesShown = allImagesShown.concat(exemplars[`${type}1`].images);
+    allImagesShown = allImagesShown.concat(exemplars[`${type}2`].images);
+  });
+
+  allImagesShown.forEach(function(image) {
+    var trial = {
+      type: 'html-double-slider-response',
+      min: [0, 0],
+      start: [4,4],
+      max: [8,8],
+      stimuli: [generateImageHTML(image),''],
+      step: [1, 1],
+      labels: [],
+      slider_count: 2,
+      prompt: ["<p>What Valence level would you rate this image?</p>", "<p>What level of arousal would you rate this image?</p>"]
+    };
+    var arousalpics = [];
+    for(i = 0; i < 9; i++){
+      arousalpics.push(`<img src="assets/stimuli/scale/arousal/arousal${i}.png" style="max-width:80%; filter: invert(100%);">`);
+    }
+    trial.labels.push(arousalpics);
+    var valencepics = [];
+    for(i = 0; i < 9; i++){
+      valencepics.push(`<img src="assets/stimuli/scale/valence/valence${i}.png" style="max-width:80%; filter: invert(100%);">`);
+    }
+    trial.labels.push(valencepics);
+    timeline.push(trial);
+  });
 
   jsPsych.init({
     timeline: timeline,

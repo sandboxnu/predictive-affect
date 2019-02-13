@@ -65,11 +65,15 @@
     if (block != param['encodingBlock']) {
       showFixationDot(timeline); // TODO change this to actually have an intertrial break
     }
-      
   }
+        console.log(exemplars)
 
   jsPsych.init({
     timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.get().filterCustom(function(trial){return (trial.foil_difference);}).ignore([]).localSave('csv','encoding_output.csv');
+        jsPsych.data.displayData();
+      }
   });
   </script>
 </html>

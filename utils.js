@@ -208,8 +208,8 @@ const createExemplarCounts = () => {
 
 // takes in exemplars and returns data nicely formatted for csv
 const normalizeExemplars = (exmps) => {
-  const data = {};
-  exmps.entries().forEach((exemplarEntry) => {
+  const data = [];
+  Object.entries(exmps).forEach((exemplarEntry) => {
     const exemplar = exemplarEntry[1];
     exemplar.getImages().forEach((image) => {
       data.push({
@@ -219,6 +219,7 @@ const normalizeExemplars = (exmps) => {
       });
     });
   });
+  return data;
 };
 
 /**

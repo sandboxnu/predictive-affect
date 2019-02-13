@@ -38,7 +38,8 @@
   for (block = 0; block < param['encodingBlocks']; block += 1) {
     exemplarCounts = createExemplarCounts();
     exemplarNames = Object.keys(exemplarCounts);
-    for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
+    for (trial = 0; trial < 3; trial += 1) {
+    // for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
       // PUSH TRIAL
       
       // SELECT AN EXEMPLAR
@@ -57,6 +58,13 @@
           choices: ['j','k'],
           trial_duration: param['display_time'] * 1000,
           response_ends_trial: false,
+          on_finish: (data) => {
+            data.imageFile = image.fileName;
+            data.trialNumber = trial;
+            data.key_press = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
+            let key = data.key_press.toLowerCase();
+            data.isCorrect = (key === 'j' && image.greyDotSide === 'left') || (key === 'k' && image.greyDotSide === 'right') ? 1 : 0;
+          }
         }
         timeline.push(curTrial);
         trial += 1;
@@ -66,14 +74,18 @@
       showFixationDot(timeline); // TODO change this to actually have an intertrial break
     }
   }
-        console.log(exemplars)
+  console.log(normalizeExemplars(exemplars));
+
+  
 
   jsPsych.init({
     timeline: timeline,
-    on_finish: function() {
-        jsPsych.data.get().filterCustom(function(trial){return (trial.foil_difference);}).ignore([]).localSave('csv','encoding_output.csv');
-        jsPsych.data.displayData();
-      }
+    on_finish: () => {
+      normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
+      // jsPsych.data.get().filterCustom((trial) => trial.greyDotX).localSave('csv', 'design.csv');
+      jsPsych.data.get().filterCustom((trial) => trial.key_press != null).ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv');
+      jsPsych.data.displayData();
+    }
   });
   </script>
 </html>

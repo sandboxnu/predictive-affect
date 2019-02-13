@@ -59,6 +59,7 @@
           trial_duration: param['display_time'] * 1000,
           response_ends_trial: false,
           on_finish: (data) => {
+            data.positionInExemplar = image.positionInExemplar;
             data.imageFile = image.fileName;
             data.trialNumber = trial;
             data.key_press = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);

@@ -73,18 +73,14 @@
     return result;
   };
 
-  // creates a foil for every exemplar
-  const createFoils = () => {
-    var result = [];
-    var count = 0;
-    for(i in exemplars) {
-      result[i] = createFoil(exemplars[i], count);
-      count++;
-    }
-    return result;
-  };
+  var foils = [];
 
-  var foils = createFoils();
+  // creates a foil for every exemplar
+  var count = 0;
+  for(i in exemplars) {
+    foils[i] = createFoil(exemplars[i], count);
+    count++;
+  }
 
   // returns the foil of the given triplet
   const getFoil = (correctTriplet, i) => {
@@ -131,8 +127,6 @@
   const promptCorrectTrip = (tripA, tripB, ordering) => {
     var foilDif = 0;
     var sameCat = false;
-    var foil = tripA.getImages().slice();
-    var correct = tripA.getImages().slice();
     const promptText = '<div><p>Using the keyboard, if the image sequence in Option A looked more familiar, press “A”.</p><p>If the image sequence in Option B looked more familiar, press “B”.</p> <p>To continue, press "Enter".</p></div>';
 
     for (let i = 0; i < imageStructLength; i++){
@@ -150,13 +144,12 @@
       choices: ['a', 'b'],
       data: {triplet_ordering: ordering, foil_difference: foilDif, same_category_tested: sameCat, first_option: tripA.getImageNames(), second_option: tripB.getImageNames()},
       on_finish: function(data) {
-          if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
-          ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
+          data.key_press = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
+          if (((ordering[0] == "correct") && (data.key_press == 'a')) || ((ordering[0] == "incorrect") && (data.key_press == 'b'))) {
             data.correct = 2;
           } else {
             data.correct = (sameCat) ? 1 : 0;
           }
-          data.key_press = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
       }
     };
 

@@ -85,6 +85,12 @@ const generateImageHTML = image => `
 </div>
 `;
 
+const generateImageHTMLNoDot = image => `
+<div class="img-overlay-wrap">
+<img src="${getImagePath(image)}">
+</div>
+`;
+
 // N = neutral, B = negative
 const tripletTypes = ['NNN', 'NNB', 'BNN', 'BBB'];
 

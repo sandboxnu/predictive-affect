@@ -24,7 +24,6 @@
     stimulus: 'In the first part of the experiment, a series of images will appear on the screen, one after the other.\n\nThese images will have a grey patch on them.\n\nIf you see a grey patch on the left side of the picture, please press the button \"J\" as quickly as possible. If you see a grey patch on the right side of the picture, please press the button \“K\” as quickly as possible.\n\nPlease make sure you always use the same fingers to press the buttons. \n\nYou will see many images, so we will give you breaks periodically.\n\nIf at any point of this part of the experiment that you want to quit, please press "Q".\n\nTo continue, please press "K".',
     choices: ['k'],
   };
-
   const encodingInstructionsPanel2 = {
     type: 'html-keyboard-response',
     stimulus: 'Next, you will see a screen with a dot representing the center. Then, the image trialing will start.\nPress "J" to continue.',
@@ -40,7 +39,7 @@
   for (block = 0; block < param['encodingBlocks']; block += 1) {
     exemplarCounts = createExemplarCounts();
     exemplarNames = Object.keys(exemplarCounts);
-    for (trial = 0; trial < param['imageStructLength']; trial += 1) {
+    for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
       // PUSH TRIAL
       
       // SELECT AN EXEMPLAR
@@ -53,6 +52,7 @@
       for (let subTrial = 0; subTrial < exemplars[curExemplar].getImages().length; subTrial += 1) {
         showFixationDot(timeline)
         const image = exemplars[curExemplar].getImage(subTrial);
+        const saveTrial = trial;
         const curTrial = {
           type: 'html-keyboard-response',
           stimulus: generateImageHTML(image),
@@ -60,20 +60,28 @@
           trial_duration: param['display_time'] * 1000,
           response_ends_trial: false,
           on_finish: (data) => {
+            data.tripletType = exemplars[curExemplar].type;
+            data.tripletImages = exemplars[curExemplar].getImages().map((img) => img.fileName);
+            data.trialType = 'encoding';
+            data.imageAffect = image.valence;
+            data.hasGreyDot = true;
             data.positionInExemplar = image.positionInExemplar;
             data.imageFile = image.fileName;
-            data.trialNumber = trial;
+            data.trialNumber = saveTrial;
+            data.greyDotX = image.greyDotX;
+            data.greyDotY = image.greyDotY;
             data.key_press = jsPsych.pluginAPI.convertKeyCodeToKeyCharacter(data.key_press);
-            let key = (data.key_press) ? data.key_press.toLowerCase() : 'N/A';
-            data.isCorrect = (key === 'j' && image.greyDotSide === 'left') || (key === 'k' && image.greyDotSide === 'right') ? 1 : 0;
+            let key = data.key_press;
+            data.isCorrect = (key === 'j' && image.dotPlacement === 'left')
+              || (key === 'k' && image.dotPlacement === 'right') ? 1 : 0;
           }
         }
         timeline.push(curTrial);
         trial += 1;
       }
     }
-    if (block != param['encodingBlock']) {
-      showFixationDot(timeline); // TODO change this to actually have an intertrial break
+    if (block != param['encodingBlocks']) {
+      showIntertrialBreak(timeline, block); // TODO change this to actually have an intertrial break
     }
   }
 
@@ -184,7 +192,7 @@
       type: 'html-keyboard-response',
       stimulus: promptText, 
       choices: ['a', 'b'],
-      data: {'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
+      data: {'trial type': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
       on_finish: function(data) {
           if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
@@ -282,8 +290,8 @@
     on_finish: function() {
         normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
         jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
-        jsPsych.data.get().filterCustom((trial) => trial.key_press != null).ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv');
-        jsPsych.data.get().filterCustom((trial) => trial['foil difference']).ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv'); 
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
         jsPsych.data.displayData();
       }
   });

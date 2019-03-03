@@ -126,6 +126,17 @@ const showFixationDot = (timeline) => {
   timeline.push(whiteDot);
 };
 
+const showIntertrialBreak = (timeline, block) => {
+  const whiteDot = {
+    type: 'html-keyboard-response',
+    stimulus: `<p>Thank you for completing block ${block} of the experiment. You will get a sixty-second break, then block ${block + 1} will begin.</p>`,
+    trial_duration: 60000,
+    choices: jsPsych.NO_KEYS,
+  };
+  timeline.push(whiteDot);
+};
+
+
 const pickRandomBetween = (lower, upper) => {
   return Math.random() * (upper - lower) + lower;
 }

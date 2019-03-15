@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Predictive Affect</title>
+    <meta charset="UTF-8">
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
@@ -292,7 +293,6 @@
         jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
         jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv'); 
         jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
-        jsPsych.data.displayData();
       }
   });
 

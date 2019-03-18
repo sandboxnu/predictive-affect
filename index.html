@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Predictive Affect</title>
+    <meta charset="UTF-8">
     <script src="node_modules/jspsych/jspsych.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-instructions.js"></script>
@@ -240,7 +241,7 @@
       type: 'html-keyboard-response',
       stimulus: promptText, 
       choices: ['a', 'b'],
-      data: {'trial type': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
+      data: {'trialType': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
       on_finish: function(data) {
           if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
@@ -317,6 +318,7 @@
         data.Valence = data.responses[0];
         data.Arousal = data.responses[1];
         data.ImageName = image.fileName;
+        data.TrialType = 'rating';
       }
     };
     var arousalpics = [];
@@ -337,10 +339,9 @@
     timeline: timeline,
     on_finish: function() {
         normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
-        jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'rating').ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
         jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv'); 
         jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
-        jsPsych.data.displayData();
       }
   });
 

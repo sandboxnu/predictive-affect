@@ -16,22 +16,71 @@
   <script>
 
   const timeline = [];
+
+  // Q to quit
+  window.addEventListener("keydown", (w, key) => window.close());
   
   // BEGIN INSTRUCTIONS
 
   const encodingInstructionsPanel1 = {
     type: 'html-keyboard-response',
-    stimulus: 'In the first part of the experiment, a series of images will appear on the screen, one after the other.\n\nThese images will have a grey patch on them.\n\nIf you see a grey patch on the left side of the picture, please press the button \"J\" as quickly as possible. If you see a grey patch on the right side of the picture, please press the button \“K\” as quickly as possible.\n\nPlease make sure you always use the same fingers to press the buttons. \n\nYou will see many images, so we will give you breaks periodically.\n\nIf at any point of this part of the experiment that you want to quit, please press "Q".\n\nTo continue, please press "K".',
+    stimulus: '<p>In the first part of the experiment, a series of images will appear on the screen, one after the other.</p><p>These images will have a grey patch on them.</p><p>If you see a grey patch on the left side of the picture, please press the button \"J\" as quickly as possible. If you see a grey patch on the right side of the picture, please press the button \“K\” as quickly as possible.</p><p>Please make sure you always use the same fingers to press the buttons. </p><p>You will see many images, so we will give you breaks periodically.</p><p>If at any point of this part of the experiment that you want to quit, please press "Q".</p><p>To continue, please press "K".</p>',
     choices: ['k'],
   };
+
+  const practiceImageLeft1 = {
+    fileName: 'sample0.jpg',
+    valence: 'S',
+    greyDotX: 150,
+    greyDotY: 240,
+    dotPlacement: 'left',
+  }
+
+  const practiceImageRight = {
+    fileName: 'sample1.jpg',
+    valence: 'S',
+    greyDotX: 450,
+    greyDotY: 240,
+    dotPlacement: 'right',
+  }
+
+  const practiceImageLeft2 = {
+    fileName: 'sample2.jpg',
+    valence: 'S',
+    greyDotX: 150,
+    greyDotY: 240,
+    dotPlacement: 'left',
+  }
+
   const encodingInstructionsPanel2 = {
     type: 'html-keyboard-response',
-    stimulus: 'Next, you will see a screen with a dot representing the center. Then, the image trialing will start.\nPress "J" to continue.',
+    stimulus: generateImageHTMLNoDot(practiceImageLeft1) + '<p>This is an example of the image with a grey patch on the left side.</p><p>You should press "J" as soon as you find it.</p><p>To see another example, please press "J".</p>',
     choices: ['j'],
   };
-  
-  timeline.push(encodingInstructionsPanel1);
-  timeline.push(encodingInstructionsPanel2);
+  const encodingInstructionsPanel3 = {
+    type: 'html-keyboard-response',
+    stimulus: generateImageHTMLNoDot(practiceImageRight) + '<p>This is an example of the image with a grey patch on the right side.</p><p>You should press "K" as soon as you find it.</p><p>To see another example, please press "K".</p>',
+    choices: ['k'],
+  };
+  const encodingInstructionsPanel4 = {
+    type: 'html-keyboard-response',
+    stimulus: generateImageHTMLNoDot(practiceImageLeft2) + '<p>This is an example of the image with a grey patch on the left side.</p><p>You should press "J" as soon as you find it.</p><p>To start the experiment, please press "J".</p><p>To see the instructions again, please press "F".</p>',
+    choices: ['j', 'f'],
+  };
+  const loopNode = {
+    timeline: [encodingInstructionsPanel1, encodingInstructionsPanel2, encodingInstructionsPanel3, encodingInstructionsPanel4],
+    loop_function: (data) => {
+          console.log(data.values())
+        if (jsPsych.pluginAPI.convertKeyCharacterToKeyCode('f') == data.values()[3].key_press) {
+          console.log('yes')
+            return true;
+        } else {
+            return false;
+        }
+     }
+  }
+
+  timeline.push(loopNode)
   // END INSTRUCTIONS
   
   // CREATE TIMELINE
@@ -40,7 +89,6 @@
     exemplarCounts = createExemplarCounts();
     exemplarNames = Object.keys(exemplarCounts);
     for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
-      // PUSH TRIAL
       
       // SELECT AN EXEMPLAR
       const curExemplar = randomlyPickFromList(exemplarNames);
@@ -249,7 +297,7 @@
 
   var allImagesShown = [];
 
-  tripletTypes.forEach(function(type) {
+  param.exemplarTypes.forEach(function(type) {
     allImagesShown = allImagesShown.concat(exemplars[`${type}1`].images);
     allImagesShown = allImagesShown.concat(exemplars[`${type}2`].images);
   });

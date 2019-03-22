@@ -26,7 +26,6 @@
     questions: [{prompt: "Please enter your subject ID."}],
     on_finish: function(data) {
       param.participantId = JSON.parse(data.responses).Q0;
-      console.log(param.participantId);
     }
   };
 
@@ -302,9 +301,10 @@
     timeline: timeline,
     on_finish: function() {
         normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
-        jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv'); 
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
+        jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv', param.participantId + '_rating_output.csv');
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv', param.participantId + '_testing_output.csv');
       }
   });
 

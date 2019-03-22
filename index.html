@@ -308,6 +308,14 @@
     timeline.push(trial);
   });
 
+  
+  const completionCode = {
+    type: 'instructions',
+    pages: ['<div><p>You MTurk completetion code is ' + param.completionCode + ' </p></div>'],
+    key_forward: 'j',
+  };
+
+  timeline.push(completionCode);
 
   jsPsych.init({
     timeline: timeline,

@@ -163,7 +163,7 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       html += (trial.max.length >= i + 1)? trial.max[i] : trial.default_max
       html += '" step="';
       html += trial.step[i]
-      html += '" style="width: 100%;" id="jspsych-html-slider-response-response' + i + '"></input>';
+      html += '" style="width: 100%;" id="jspsych-html-slider-response-response-' + i + '"></input>';
       // html += '<div>';
 
       // Slider Labels

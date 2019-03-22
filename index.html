@@ -9,6 +9,7 @@
     <script src="node_modules/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-slider-response.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-survey-text.js"></script>
     <script src="assets/plugins/jspsych-html-double-slider-response.js"></script>
     <script src="utils.js"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
@@ -19,6 +20,17 @@
   const timeline = [];
   
   // BEGIN INSTRUCTIONS
+
+  const participantId = {
+    type: 'survey-text',
+    questions: [{prompt: "Please enter your subject ID."}],
+    on_finish: function(data) {
+      param.participantId = JSON.parse(data.responses).Q0;
+      console.log(param.participantId);
+    }
+  };
+
+  timeline.push(participantId);
 
   const encodingInstructionsPanel1 = {
     type: 'html-keyboard-response',

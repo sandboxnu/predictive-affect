@@ -72,6 +72,7 @@
           trial_duration: param['display_time'] * 1000,
           response_ends_trial: false,
           on_finish: (data) => {
+            data.participantId = param.participantId;
             data.tripletType = exemplars[curExemplar].type;
             data.tripletImages = exemplars[curExemplar].getImages().map((img) => img.fileName);
             data.trialType = 'encoding';
@@ -204,7 +205,7 @@
       type: 'html-keyboard-response',
       stimulus: promptText, 
       choices: ['a', 'b'],
-      data: {'trialType': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
+      data: {'participantId': param.participantId, 'trialType': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
       on_finish: function(data) {
           if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
@@ -286,6 +287,7 @@
       slider_count: 2,
       prompt: ["<p>What Valence level would you rate this image?</p>", "<p>What level of arousal would you rate this image?</p>"],
       on_finish: (data) => {
+        data.participantId = param.participantId;
         data.Valence = data.responses[0];
         data.Arousal = data.responses[1];
         data.ImageName = image.fileName;

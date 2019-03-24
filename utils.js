@@ -17,6 +17,7 @@ param.trialsPerEncodingBlock = param.exemplarTypes[0].length * param.numExemplar
 param.foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
 param.foilTestedType = [false, true, false, true, false, false,
   true, true, true, false, false, true];
+param.completionCode = Math.floor(Math.random() * 1000000000);
 
 
 // Utilities for use in the html scripts

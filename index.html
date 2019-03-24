@@ -9,6 +9,7 @@
     <script src="node_modules/jspsych/plugins/jspsych-image-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-html-slider-response.js"></script>
+    <script src="node_modules/jspsych/plugins/jspsych-survey-text.js"></script>
     <script src="assets/plugins/jspsych-html-double-slider-response.js"></script>
     <script src="utils.js"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
@@ -22,6 +23,16 @@
   window.addEventListener("keydown", (w, key) => window.close());
   
   // BEGIN INSTRUCTIONS
+
+  const participantId = {
+    type: 'survey-text',
+    questions: [{prompt: "Please enter your subject ID."}],
+    on_finish: function(data) {
+      param.participantId = JSON.parse(data.responses).Q0;
+    }
+  };
+
+  timeline.push(participantId);
 
   const encodingInstructionsPanel1 = {
     type: 'html-keyboard-response',
@@ -109,6 +120,7 @@
           trial_duration: param['display_time'] * 1000,
           response_ends_trial: false,
           on_finish: (data) => {
+            data.participantId = param.participantId;
             data.tripletType = exemplars[curExemplar].type;
             data.tripletImages = exemplars[curExemplar].getImages().map((img) => img.fileName);
             data.trialType = 'encoding';
@@ -241,7 +253,7 @@
       type: 'html-keyboard-response',
       stimulus: promptText, 
       choices: ['a', 'b'],
-      data: {'trialType': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
+      data: {'participantId': param.participantId, 'trialType': 'testing', 'triplet ordering': ordering, 'foil difference': foilDif, 'same category tested': sameCat, 'first option': tripA.getImageNames(), 'second option': tripB.getImageNames()},
       on_finish: function(data) {
           if (((ordering[0] == "correct") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('a'))) ||
           ((ordering[0] == "incorrect") && (data.key_press == jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b')))) {
@@ -287,14 +299,22 @@
 
   // END TESTING
 
-  const ratingInstructions = {
-    type: 'instructions',
-    pages: ['For this part of the experiment, we will show you the images you saw earlier.\n\nFor each image, you will rate how it made you feel.\n\nNote that you will not be able to quit the experiment during this part of the experiment. If you do not wish to continue, please press “Q” to quit now.\n\nTo continue, please press "J".'],
-    key_forward: 'j',
-   };
+  let ratingInstructions = 
+  [
+    ['For this part of the experiment, we will show you the images you saw earlier.\n\nFor each image, you will rate how it made you feel.\n\nNote that you will not be able to quit the experiment during this part of the experiment. If you do not wish to continue, please press “Q” to quit now.\n\nTo continue, please press "J".'],
+    ['First, you will rate whether the image made you feel pleasant or unpleasant. In other words, we want you to rate your emotional feelings: whether you felt positive/pleasant/good, or negative/unpleasant/bad.\n\nSecond, you will rate whether the image made you feel activated or deactivated. In other words, we want you to rate the physical feelings in your body: whether you felt activated/excited/worked-up, or deactivated/tired/bored.\n\nWe will show you both of the scales and provide some more examples.\n\nTo continue, please press "J".'],
+    ['For each image, you will use the icons below to answer how pleasant or unpleasant the image made you feel. This is a rating of your emotional feelings.\n\nIf the image made you feel negative or unpleasant, then you should select icons on the left side of the scale.\n\nIf the image made you feel positive or pleasant, then you should select icons on the right side of the scale.\n\nIf the image made you feel very little or no emotion, then you should select icons around the middle of the scale.\n\nTo continue, please press "J".'],
+    ['For each image, you will also rate how activated or deactivated the image made you feel. This is a rating of the physical feelings in your body.\n\nThink of when you feel most deactivated, like right before you fall asleep, or when you feel calm, depressed, or bored. If the image made you feel this way, then you should select icons on the left side of the scale.\n\nThink of when you feel most activated, like when you have run up a flight of stairs, had many cups of coffee, or feel excited, angry, or afraid. If the image made you feel this way, then you should select icons on the right side of the scale.\n\nThink of when you have felt awake but not too worked up, like when you are doing something engaging but not too activating, e.g. chores around the house. If the image made you feel this way, then you should select icons around the middle of the scale.\n\nTo continue, please press "J".'],
+    ['We will show you images in a moment. For each, you will rate your emotional feeling (unpleasant–pleasant) and the physical feelings in your body (deactivated–activated).\n\nBoth scales will appear beneath the image. Please select an icon for both.\n\nAfter selecting both ratings, press "Enter" or "Return" to continue to the next trial.\n\nPlease note that you will not be able to quit during this part of the experiment. If you do not wish to continue, please press "Q" to quit now.\n\nTo start the experiment, please press "J".\nTo see the instructions again, please press "F".']
+  ];
 
-   timeline.push(ratingInstructions);
-  
+  timeline.push({
+    type: 'instructions',
+    pages: ratingInstructions,
+    key_forward: 'j',
+    allow_backward: true,
+    key_backward: 'f',
+  });
 
   var allImagesShown = [];
 
@@ -315,6 +335,7 @@
       slider_count: 2,
       prompt: ["<p>What Valence level would you rate this image?</p>", "<p>What level of arousal would you rate this image?</p>"],
       on_finish: (data) => {
+        data.participantId = param.participantId;
         data.Valence = data.responses[0];
         data.Arousal = data.responses[1];
         data.ImageName = image.fileName;
@@ -322,26 +343,38 @@
       }
     };
     var arousalpics = [];
+
     for(i = 0; i < 9; i++){
-      arousalpics.push(`<img src="assets/stimuli/scale/arousal/arousal${i}.png" style="max-width:80%; filter: invert(100%);">`);
+      let callToSetSliderOnClick = `(() => {document.getElementById('jspsych-html-slider-response-response-0').value = ${i}; })();`;
+      arousalpics.push(`<img onclick="${callToSetSliderOnClick}" src="assets/stimuli/scale/arousal/arousal${i}.png" style="max-width:80%; ">`); //filter: invert(100%);
     }
     trial.labels.push(arousalpics);
     var valencepics = [];
     for(i = 0; i < 9; i++){
-      valencepics.push(`<img src="assets/stimuli/scale/valence/valence${i}.png" style="max-width:80%; filter: invert(100%);">`);
+      let callToSetSliderOnClick = `(() => {document.getElementById('jspsych-html-slider-response-response-1').value = ${i}; })();`;
+      valencepics.push(`<img src="assets/stimuli/scale/valence/valence${i}.png" style="max-width:80%; ">`);
     }
     trial.labels.push(valencepics);
     timeline.push(trial);
   });
 
+  
+  const completionCode = {
+    type: 'instructions',
+    pages: ['<div><p>You MTurk completetion code is ' + param.completionCode + ' </p></div>'],
+    key_forward: 'j',
+  };
+
+  timeline.push(completionCode);
 
   jsPsych.init({
     timeline: timeline,
     on_finish: function() {
         normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'rating').ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv','rating_output.csv');
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv','encoding_output.csv'); 
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv','testing_output.csv');
+        jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv', param.participantId + '_rating_output.csv');
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
+        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv', param.participantId + '_testing_output.csv');
       }
   });
 

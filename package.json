@@ -4,6 +4,7 @@
   "description": "Psychology experiment designed to test the effects of the valence of an image on the ability to recognize image patterns.",
   "main": "experiment.js",
   "dependencies": {
+    "json-2-csv": "^3.3.0",
     "jspsych": "github:jspsych/jsPsych"
   },
   "devDependencies": {

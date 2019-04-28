@@ -326,9 +326,8 @@
 
   var allImagesShown = [];
 
-  param.exemplarTypes.forEach(function(type) {
-    allImagesShown = allImagesShown.concat(exemplars[`${type}1`].images);
-    allImagesShown = allImagesShown.concat(exemplars[`${type}2`].images);
+  Object.keys(exemplars).forEach((name) => {
+    allImagesShown = allImagesShown.concat(exemplars[name].getImages())
   });
 
   allImagesShown.forEach(function(image) {

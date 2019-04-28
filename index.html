@@ -22,7 +22,6 @@
 
   // BEGIN INSTRUCTIONS
 
-
   const participantId = {
     type: 'survey-text',
     questions: [{prompt: "Please enter your subject ID."}],
@@ -108,7 +107,7 @@
   // CREATE TIMELINE
   
   for (block = 0; block < param['encodingBlocks']; block += 1) {
-    exemplarCounts = createExemplarCounts();
+    exemplarCounts = createExemplarCounts(exemplars);
     exemplarNames = Object.keys(exemplarCounts);
     for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
       
@@ -161,7 +160,6 @@
   // creates a random foil for a single exemplar
   const createFoil = (curTrip, i) => {
     var result = curTrip.copy();
-
     const numImageTested = param['foilTestedOn'][i];
     const typeTested = param['foilTestedType'][i];
     const curType = curTrip.getImage(numImageTested).valence;

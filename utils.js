@@ -1,9 +1,8 @@
 /* CONSTANTS */
 
 const param = {};
-param.exemplarTypes = ['NNN', 'NNB', 'BNN', 'BBB']; // the different types of exemplar. these can be triplets, pairs, etc
-param.numExemplarsPerType = 2; // number of exemplars per type (see exemplarTypes variable)
-param.imageStructLength = 3;
+param.exemplarTypes = ['NNN', 'NNB', 'NNN', 'NNB']; // the different types of exemplar. can be triplets, pairs, etc
+param.imageStructLength = (param.exemplarTypes[0] || []).length;
 param.img_x = 640; // width of image
 param.img_y = 480; // height of image
 param.grey_radius = 25; // radius of grey dot
@@ -12,7 +11,7 @@ param.fixation_time = 0.5; // time in seconds to display fixation trial
 param.break_duration = 60; // time in seconds to have a break between blocks
 param.encodingBlocks = 6; // number of encoding blocks
 param.repPerBlock = 6; // number of repetitions per exemplar encoding block
-param.trialsPerEncodingBlock = param.exemplarTypes[0].length * param.numExemplarsPerType
+param.trialsPerEncodingBlock = param.exemplarTypes.reduce((t, acc) => acc + t.length, 0)
   * param.repPerBlock * param.exemplarTypes.length; // total number of trials per block
 param.foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
 param.foilTestedType = [false, true, false, true, false, false,
@@ -175,7 +174,7 @@ for (let i = 0; i < param.trialsPerEncodingBlock / param.repPerBlock; i += 1) {
 }
 
 /**
- * Exemplar is a set of 3 images also known as a triplet.
+ * Exemplar is a set of n images.
  */
 class Exemplar {
   constructor(type) {
@@ -208,7 +207,7 @@ class Exemplar {
 
   // TODO both these methods should copy
   getImages() {
-    return this.images;
+    return [...this.images];
   }
 
   getImageNames() {
@@ -236,27 +235,36 @@ class Exemplar {
 }
 
 /*
-Provided variable:
+Provided variables:
+exemplars:
+  - object with string keys
+  - keys are "NNN", "BBB", etc to match each unique type in param.exemplarTypes
+  - values are arrays of each exemplar per type
 exemplars
   - object with string keys
-  - keys are "NNN1", "NNN2", "NBB1", "NBB2", etc to match param.exemplarTypes (2 per triplet)
+  - keys are "NNN1", "NNN2", "NBB1", "NBB2", "NBB3", etc to match param.exemplarTypes
+  - values are exemplar objects
 */
 
+const denormalizedExemplars = {};
 const exemplars = {};
 
 for (let i = 0; i < param.exemplarTypes.length; i += 1) {
   const type = param.exemplarTypes[i];
-  const exemplar1 = new Exemplar(type);
-  const exemplar2 = new Exemplar(type);
-  exemplars[`${type}1`] = exemplar1;
-  exemplars[`${type}2`] = exemplar2;
+  if (!Array.isArray(denormalizedExemplars[type])) denormalizedExemplars[type] = [];
+  denormalizedExemplars[type].push(new Exemplar(type));
 }
 
-const createExemplarCounts = () => {
+Object.keys(denormalizedExemplars).forEach((type) => {
+  for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {
+    exemplars[`${type}${i}`] = denormalizedExemplars[type][i - 1];
+  }
+});
+
+const createExemplarCounts = (curExemplars) => {
   const exemplarCounts = {};
-  param.exemplarTypes.forEach((type) => {
-    exemplarCounts[`${type}1`] = param.repPerBlock;
-    exemplarCounts[`${type}2`] = param.repPerBlock;
+  Object.keys(curExemplars).forEach((name) => {
+    exemplarCounts[name] = param.repPerBlock;
   });
   return exemplarCounts;
 };

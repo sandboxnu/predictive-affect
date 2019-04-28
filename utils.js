@@ -15,9 +15,9 @@ param.encodingBlocks = 6; // number of encoding blocks
 param.repPerBlock = 6; // number of repetitions per exemplar encoding block
 param.trialsPerEncodingBlock = param.exemplarTypes[0].length * param.numExemplarsPerType
   * param.repPerBlock * param.exemplarTypes.length; // total number of trials per block
-param.foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
+param.foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0]; // for every exemplar, the index of the image which the foil is different from the original triplet
 param.foilTestedType = [false, true, false, true, false, false,
-  true, true, true, false, false, true];
+  true, true, true, false, false, true]; // for every exemplar, whether the replaced image in the foil is the same affect as the image it replaces. 
 param.completionCode = Math.floor(Math.random() * 1000000000);
 
 

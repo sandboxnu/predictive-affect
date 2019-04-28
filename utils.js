@@ -1,7 +1,7 @@
 /* CONSTANTS */
 
 const param = {};
-param.exemplarTypes = ['NNN', 'NNB', 'NNN', 'NNB']; // the different types of exemplar. can be triplets, pairs, etc
+param.exemplarTypes = ['NN', 'BN', 'NN']; // the different types of exemplar. can be triplets, pairs, etc
 param.imageStructLength = (param.exemplarTypes[0] || []).length;
 param.img_x = 640; // width of image
 param.img_y = 480; // height of image
@@ -13,11 +13,19 @@ param.encodingBlocks = 6; // number of encoding blocks
 param.repPerBlock = 6; // number of repetitions per exemplar encoding block
 param.trialsPerEncodingBlock = param.exemplarTypes.reduce((t, acc) => acc + t.length, 0)
   * param.repPerBlock * param.exemplarTypes.length; // total number of trials per block
-param.foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
-param.foilTestedType = [false, true, false, true, false, false,
-  true, true, true, false, false, true];
+param.foilTestedOn = [1, 0, 1];
+param.foilTestedType = [true, false, true];
 param.completionCode = Math.floor(Math.random() * 1000000000);
 
+if (param.foilTestedOn.length !== param.exemplarTypes.length) {
+  // eslint-disable-next-line no-console
+  throw new Error('param.foilTestedOn and param.exemplarTypes match up by position, so they must be the same length.');
+}
+
+if (param.foilTestedOn.length !== param.exemplarTypes.length) {
+  // eslint-disable-next-line no-console
+  throw new Error('param.foilTestedType and param.exemplarTypes match up by position, so they must be the same length.');
+}
 
 // Utilities for use in the html scripts
 const neuImages = ['1908.jpg', '2101.jpg', '2191.jpg', '1945.jpg', '1390.jpg', '2520.jpg', '2107.jpg', '2393.jpg', '2484.jpg', '2597.jpg', '2020.jpg', '1903.jpg', '2309.jpg', '1645.jpg', '1114.jpg', '2635.jpg', '2272.jpg', '1302.jpg', '1122.jpg', '2383.jpg', '2359.jpg', '2840.jpg', '2575.jpg', '2122.jpg', '2890.jpg', '2220.jpg', '2411.jpg', '1617.jpg', '1670.jpg', '2384.jpg', '2749.jpg', '1935.jpg', '2279.jpg', '2397.jpg', '2210.jpg', '2377.jpg', '2579.jpg', '2458.jpg', '2445.jpg', '2308.jpg', '2446.jpg', '1560.jpg', '2032.jpg', '2206.jpg', '2221.jpg', '2752.jpg', '1947.jpg', '1931.jpg', '2435.jpg', '2102.jpg', '2235.jpg', '2396.jpg', '1230.jpg', '2215.jpg', '2695.jpg', '2745.1.jpg', '2521.jpg', '2870.jpg', '1726.jpg', '1350.jpg', '2704.jpg', '1820.jpg', '1675.jpg', '2606.jpg', '1616.jpg', '2770.jpg', '2850.jpg'];
@@ -186,9 +194,10 @@ class Exemplar {
   copy() {
     if (this == null || typeof this !== 'object') return this;
     const copy = new Exemplar(this.type);
-    for (let i = 0; i < param.imageStructLength; i += 1) {
-      copy.images[i] = copyImage(this.getImage(i));
-    }
+    copy.images = [];
+    this.getImages().forEach((image) => {
+      copy.images.push(copyImage(image));
+    });
     return copy;
   }
 

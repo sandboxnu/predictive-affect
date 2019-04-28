@@ -1,7 +1,7 @@
 /* CONSTANTS */
 
 const param = {};
-param.randomTriplets = true;
+param.randomTriplets = false; // false if the images in the triplets are in the same order every block/phase, true if they are randomly shuffled before appearing
 param.exemplarTypes = ['NNN', 'NNB', 'BNN', 'BBB']; // the different types of exemplar. these can be triplets, pairs, etc
 param.numExemplarsPerType = 2; // number of exemplars per type (see exemplarTypes variable)
 param.imageStructLength = 3;
@@ -209,7 +209,7 @@ class Exemplar {
 
   // TODO both these methods should copy
   getImages() {
-    return param.randomTriplets ? this.images.sort( (x, y) => Math.random() - 0.5): this.images;
+    return param.randomTriplets ? this.images.slice().sort( (x, y) => Math.random() - 0.5): this.images;
   }
 
   getImageNames() {

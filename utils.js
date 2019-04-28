@@ -209,7 +209,7 @@ class Exemplar {
 
   // TODO both these methods should copy
   getImages() {
-    return !param.randomTriplets ? this.images.sort( (x, y) => Math.random() - 0.5): this.images;
+    return param.randomTriplets ? this.images.sort( (x, y) => Math.random() - 0.5): this.images;
   }
 
   getImageNames() {

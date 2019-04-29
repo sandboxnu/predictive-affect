@@ -199,7 +199,7 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       response.rt = endTime - startTime;
       response.responses = [];
       for(var i = 0; i < trial.slider_count ; i++) {
-        response.responses.push(display_element.querySelector('#jspsych-html-slider-response-response' + i).value)
+        response.responses.push(display_element.querySelector('#jspsych-html-slider-response-response-' + i).value)
       }
 
       if(trial.response_ends_trial){

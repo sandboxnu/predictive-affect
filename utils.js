@@ -10,20 +10,18 @@ param.display_time = 1.5; // time in seconds to display encoding trial
 param.fixation_time = 0.5; // time in seconds to display fixation trial
 param.break_duration = 60; // time in seconds to have a break between blocks
 param.encodingBlocks = 6; // number of encoding blocks
-param.repPerBlock = 6; // number of repetitions per exemplar encoding block
-param.trialsPerEncodingBlock = param.exemplarTypes.reduce((t, acc) => acc + t.length, 0)
+param.repPerBlock = 3; // number of repetitions per exemplar encoding block
+param.trialsPerEncodingBlock = param.exemplarTypes.reduce((acc, t) => acc + t.length, 0)
   * param.repPerBlock * param.exemplarTypes.length; // total number of trials per block
 param.foilTestedOn = [1, 0, 1];
 param.foilTestedType = [true, false, true];
 param.completionCode = Math.floor(Math.random() * 1000000000);
 
 if (param.foilTestedOn.length !== param.exemplarTypes.length) {
-  // eslint-disable-next-line no-console
   throw new Error('param.foilTestedOn and param.exemplarTypes match up by position, so they must be the same length.');
 }
 
 if (param.foilTestedOn.length !== param.exemplarTypes.length) {
-  // eslint-disable-next-line no-console
   throw new Error('param.foilTestedType and param.exemplarTypes match up by position, so they must be the same length.');
 }
 
@@ -42,14 +40,10 @@ IMAGE OBJECTS
 }
 */
 
-const removeElement = (array, element) => {
-  for (let i = 0; i < array.length; i += 1) {
-    if (array[i] === element) {
-      return array.splice(i, 1);
-    }
-  }
-  return null;
-};
+const removeElement = (array, element) => array.filter((e) => {
+  return e !== element;
+});
+
 
 /* RANDOM UTILS */
 

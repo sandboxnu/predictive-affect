@@ -91,9 +91,7 @@
   const loopNode = {
     timeline: [encodingInstructionsPanel1, encodingInstructionsPanel2, encodingInstructionsPanel3, encodingInstructionsPanel4],
     loop_function: (data) => {
-          console.log(data.values())
         if (jsPsych.pluginAPI.convertKeyCharacterToKeyCode('f') == data.values()[3].key_press) {
-          console.log('yes')
             return true;
         } else {
             return false;
@@ -109,13 +107,13 @@
   for (block = 0; block < param['encodingBlocks']; block += 1) {
     exemplarCounts = createExemplarCounts(exemplars);
     exemplarNames = Object.keys(exemplarCounts);
-    for (trial = 0; trial < param['trialsPerEncodingBlock']; trial += 1) {
-      
+    for (trial = 0; trial < param['trialsPerEncodingBlock'] / param['imageStructLength']; trial += 1) {
+
       // SELECT AN EXEMPLAR
       const curExemplar = randomlyPickFromList(exemplarNames);
       exemplarCounts[curExemplar] -= 1;
-      if (exemplarCounts[curExemplar] = 0) {
-        removeElement(exemplarNames, curExemplar);
+      if (exemplarCounts[curExemplar] === 0) {
+        exemplarNames = removeElement(exemplarNames, curExemplar);
       }
       // DISPLAY ITS IMAGES
       for (let subTrial = 0; subTrial < exemplars[curExemplar].getImages().length; subTrial += 1) {
@@ -150,8 +148,8 @@
         trial += 1;
       }
     }
-    if (block != param['encodingBlocks']) {
-      showIntertrialBreak(timeline, block); // TODO change this to actually have an intertrial break
+    if (block != param['encodingBlocks'] - 1) {
+      showIntertrialBreak(timeline, block);
     }
   }
 
@@ -206,7 +204,7 @@
 
   const testingInstructions = {
     type: 'instructions',
-    pages: ['<div><p>In this part of the experiment, you will see two groups of images: Group A and Group B. Each group includes three images, which will appear one after the other.</p> <p>Your job is to indicate which group looks most familiar. Please pay close attention when the images are shown, as they will not be repeated.</p> <p>First, we will show you Groups A and B. After seeing all groups, you will decide which group looks most familiar.</p><p>To start the experiment, please press "J".</p><p>To see the instructions again, please press "F".</p></div>'],
+    pages: [`<div><p>In this part of the experiment, you will see two groups of images: Group A and Group B. Each group includes ${imageStructLength} images, which will appear one after the other.</p> <p>Your job is to indicate which group looks most familiar. Please pay close attention when the images are shown, as they will not be repeated.</p> <p>First, we will show you Groups A and B. After seeing all groups, you will decide which group looks most familiar.</p><p>To start the experiment, please press "J".</p><p>To see the instructions again, please press "F".</p></div>`],
     key_forward: 'j',
   };
    

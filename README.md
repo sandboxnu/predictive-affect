@@ -8,7 +8,7 @@ It measures the effect a person's feeling about an image has on their memory of 
 Due to the nature of the experiment and specifics of the task, the experiment is 100% static and can be run by simply opening up index.html. 
 As a prerequisite, you will need the images associated with the trials.
 
-## Contrubitung
+## Contributing
 We welcome all potential contributors!
 If you would like to open a PR to edit code style or resolve an issue, please go ahead.
 Please email drew.r@husky.neu.edu if you would like to contribute further to this project, as you will need the images, which are sensitive and will require a conversation before access is granted.

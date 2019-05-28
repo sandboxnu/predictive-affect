@@ -153,8 +153,10 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       html += (trial.prompt.length >= i + 1)? trial.prompt[i] : trial.default_prompt;
       html +=  '</div>';
       
-      // Slider 
+      // Slider & pics
       html += '<div class="jspsych-html-slider-response-container" style="position:relative;">';
+      // Slider 
+      html += '<div class="jspsych-html-slider-response-slider-container">'; 
       html += '<input type="range" value="';
       html += (trial.start.length >= i + 1)? trial.start[i] : '1'
       html += '" min="';
@@ -163,11 +165,12 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       html += (trial.max.length >= i + 1)? trial.max[i] : trial.default_max
       html += '" step="';
       html += trial.step[i]
-      html += '" style="width: 100%;" id="jspsych-html-slider-response-response-' + i + '"></input>';
-      // html += '<div>';
+      html += '" style="width: 100%; background: black;" id="jspsych-html-slider-response-response-' + i + '"></input>';
+      html += '</div>';
 
       // Slider Labels
       // html += '<div>';
+      html += '<div class="jspsych-html-slider-response-labels-container">'; // <labels
       var labels_count = (trial.labels.length >= i + 1) ? trial.labels[i].length : trial.default_labels.length;
       for(var j=0; j < labels_count; j++){
         var width = 100/(labels_count-1);
@@ -178,9 +181,9 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
         html += '</span>';
         html += '</div>';
       }
-      // html += '</div>';
-      html += '</div>';
-      html += '</div>';
+      html += '</div>'; // </labels
+      html += '</div>'; // </Slider+Pics
+      html += '</div>'; // </Entire
     }
 
     // add submit button
@@ -199,7 +202,7 @@ jsPsych.plugins["html-double-slider-response"] = (function() {
       response.rt = endTime - startTime;
       response.responses = [];
       for(var i = 0; i < trial.slider_count ; i++) {
-        response.responses.push(display_element.querySelector('#jspsych-html-slider-response-response' + i).value)
+        response.responses.push(display_element.querySelector('#jspsych-html-slider-response-response-' + i).value)
       }
 
       if(trial.response_ends_trial){

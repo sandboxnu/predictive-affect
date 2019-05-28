@@ -1,9 +1,10 @@
 /* CONSTANTS */
 
 const param = {};
+param.randomTriplets = false; // false if the images in the triplets are in the same order every block/phase, true if they are randomly shuffled before appearing
 param.exemplarTypes = ['NNN', 'NNB', 'BNN', 'BBB']; // the different types of exemplar. these can be triplets, pairs, etc
 param.numExemplarsPerType = 2; // number of exemplars per type (see exemplarTypes variable)
-param.imageStructLength = 3;
+param.imageStructLength = (param.exemplarTypes[0] || []).length; // INVARIANT the exemplarTypes are assumed to be the same length
 param.img_x = 640; // width of image
 param.img_y = 480; // height of image
 param.grey_radius = 25; // radius of grey dot
@@ -11,14 +12,20 @@ param.display_time = 1.5; // time in seconds to display encoding trial
 param.fixation_time = 0.5; // time in seconds to display fixation trial
 param.break_duration = 60; // time in seconds to have a break between blocks
 param.encodingBlocks = 6; // number of encoding blocks
-param.repPerBlock = 6; // number of repetitions per exemplar encoding block
-param.trialsPerEncodingBlock = param.exemplarTypes[0].length * param.numExemplarsPerType
+param.repPerBlock = 3; // number of repetitions per exemplar encoding block
+param.trialsPerEncodingBlock = param.exemplarTypes.reduce((acc, t) => acc + t.length, 0)
   * param.repPerBlock * param.exemplarTypes.length; // total number of trials per block
-param.foilTestedOn = [1, 2, 0, 1, 2, 1, 2, 0, 2, 0, 1, 2, 1, 0];
-param.foilTestedType = [false, true, false, true, false, false,
-  true, true, true, false, false, true];
+param.foilTestedOn = [1, 2, 0, 1]; // for every exemplar, the index of the image which the foil is different from the original triplet
+param.foilTestedType = [false, true, false, true]; // for every exemplar, whether the replaced image in the foil is the same affect as the image it replaces.
 param.completionCode = Math.floor(Math.random() * 1000000000);
 
+if (param.foilTestedOn.length !== param.exemplarTypes.length) {
+  throw new Error('param.foilTestedOn and param.exemplarTypes match up by position, so they must be the same length.');
+}
+
+if (param.foilTestedOn.length !== param.exemplarTypes.length) {
+  throw new Error('param.foilTestedType and param.exemplarTypes match up by position, so they must be the same length.');
+}
 
 // Utilities for use in the html scripts
 const neuImages = ['1908.jpg', '2101.jpg', '2191.jpg', '1945.jpg', '1390.jpg', '2520.jpg', '2107.jpg', '2393.jpg', '2484.jpg', '2597.jpg', '2020.jpg', '1903.jpg', '2309.jpg', '1645.jpg', '1114.jpg', '2635.jpg', '2272.jpg', '1302.jpg', '1122.jpg', '2383.jpg', '2359.jpg', '2840.jpg', '2575.jpg', '2122.jpg', '2890.jpg', '2220.jpg', '2411.jpg', '1617.jpg', '1670.jpg', '2384.jpg', '2749.jpg', '1935.jpg', '2279.jpg', '2397.jpg', '2210.jpg', '2377.jpg', '2579.jpg', '2458.jpg', '2445.jpg', '2308.jpg', '2446.jpg', '1560.jpg', '2032.jpg', '2206.jpg', '2221.jpg', '2752.jpg', '1947.jpg', '1931.jpg', '2435.jpg', '2102.jpg', '2235.jpg', '2396.jpg', '1230.jpg', '2215.jpg', '2695.jpg', '2745.1.jpg', '2521.jpg', '2870.jpg', '1726.jpg', '1350.jpg', '2704.jpg', '1820.jpg', '1675.jpg', '2606.jpg', '1616.jpg', '2770.jpg', '2850.jpg'];
@@ -35,14 +42,10 @@ IMAGE OBJECTS
 }
 */
 
-const removeElement = (array, element) => {
-  for (let i = 0; i < array.length; i += 1) {
-    if (array[i] === element) {
-      return array.splice(i, 1);
-    }
-  }
-  return null;
-};
+const removeElement = (array, element) => array.filter((e) => {
+  return e !== element;
+});
+
 
 /* RANDOM UTILS */
 
@@ -175,7 +178,7 @@ for (let i = 0; i < param.trialsPerEncodingBlock / param.repPerBlock; i += 1) {
 }
 
 /**
- * Exemplar is a set of 3 images also known as a triplet.
+ * Exemplar is a set of n images.
  */
 class Exemplar {
   constructor(type) {
@@ -187,9 +190,10 @@ class Exemplar {
   copy() {
     if (this == null || typeof this !== 'object') return this;
     const copy = new Exemplar(this.type);
-    for (let i = 0; i < param.imageStructLength; i += 1) {
-      copy.images[i] = copyImage(this.getImage(i));
-    }
+    copy.images = [];
+    this.getImages().forEach((image) => {
+      copy.images.push(copyImage(image));
+    });
     return copy;
   }
 
@@ -208,7 +212,7 @@ class Exemplar {
 
   // TODO both these methods should copy
   getImages() {
-    return this.images;
+    return param.randomTriplets ? this.images.slice().sort( (x, y) => Math.random() - 0.5): [...this.images];
   }
 
   getImageNames() {
@@ -236,27 +240,36 @@ class Exemplar {
 }
 
 /*
-Provided variable:
+Provided variables:
+exemplars:
+  - object with string keys
+  - keys are "NNN", "BBB", etc to match each unique type in param.exemplarTypes
+  - values are arrays of each exemplar per type
 exemplars
   - object with string keys
-  - keys are "NNN1", "NNN2", "NBB1", "NBB2", etc to match param.exemplarTypes (2 per triplet)
+  - keys are "NNN1", "NNN2", "NBB1", "NBB2", "NBB3", etc to match param.exemplarTypes
+  - values are exemplar objects
 */
 
+const denormalizedExemplars = {};
 const exemplars = {};
 
 for (let i = 0; i < param.exemplarTypes.length; i += 1) {
   const type = param.exemplarTypes[i];
-  const exemplar1 = new Exemplar(type);
-  const exemplar2 = new Exemplar(type);
-  exemplars[`${type}1`] = exemplar1;
-  exemplars[`${type}2`] = exemplar2;
+  if (!Array.isArray(denormalizedExemplars[type])) denormalizedExemplars[type] = [];
+  denormalizedExemplars[type].push(new Exemplar(type));
 }
 
-const createExemplarCounts = () => {
+Object.keys(denormalizedExemplars).forEach((type) => {
+  for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {
+    exemplars[`${type}${i}`] = denormalizedExemplars[type][i - 1];
+  }
+});
+
+const createExemplarCounts = (curExemplars) => {
   const exemplarCounts = {};
-  param.exemplarTypes.forEach((type) => {
-    exemplarCounts[`${type}1`] = param.repPerBlock;
-    exemplarCounts[`${type}2`] = param.repPerBlock;
+  Object.keys(curExemplars).forEach((name) => {
+    exemplarCounts[name] = param.repPerBlock;
   });
   return exemplarCounts;
 };

@@ -164,6 +164,34 @@ const showIntertrialBreak = (timeline) => {
   timeline.push(whiteDot);
 };
 
+/* FILE SAVING */
+
+// taken from jspsych codebase
+// fixme: abstract into our own fork of jspsych
+const JSONToCSV = (json) => {
+  var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+  var line = '';
+  var result = '';
+  var columns = [];
+
+  var i = 0;
+  for (var j = 0; j < array.length; j++) {
+    for (var key in array[j]) {
+      var keyString = key + "";
+      keyString = '"' + keyString.replace(/"/g, '""') + '",';
+      if (!columns.includes(key)) {
+        columns[i] = key;
+        line += keyString;
+        i++;
+      }
+    }
+}
+
+const saveJSONAsCSV = (json) => {
+  const csv = JSONToCSV(json);
+  console.log(csv)
+};
+
 /* EXEMPLARS */
 
 // current list of used stimuli
@@ -289,6 +317,8 @@ const normalizeExemplars = (exmps) => {
   });
   return data;
 };
+
+json2csv(exemplars)
 
 /**
  * Export modules for testing purposes

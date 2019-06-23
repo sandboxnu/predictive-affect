@@ -12,15 +12,13 @@
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1"
+    "eslint-plugin-react": "^7.11.1",
+    "mocha": "^6.1.4"
   },
   "scripts": {
     "test": "mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sandboxneu/predictive-affect.git"
-  },
+  "repository": "https://github.com/sandboxneu/predictive-affect.git",
   "keywords": [
     "psychology",
     "jspsych",

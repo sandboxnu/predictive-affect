@@ -1,5 +1,4 @@
-require("jspsych");
-const { jsPsych } = global; // limitation of the library
+const jsPsych = require("jspsych");
 const {
   generateImageHTML,
   generateImageHTMLNoDot,

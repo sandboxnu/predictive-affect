@@ -24,7 +24,7 @@ param.foilTestedOn = [
   0,
   1
 ]; /* for every exemplar, the index of the image which the foil is
-                                      different from the original triplet */
+      different from the original triplet */
 param.foilTestedType = [
   false,
   true,

@@ -1,4 +1,4 @@
-const param = require("./param");
+const { param } = require("./param");
 const { copyImage } = require("./utils/imageUtils");
 const {
   randomlyPickFromList,
@@ -147,5 +147,5 @@ const normalizeExemplars = exmps => {
 module.exports = {
   normalizeExemplars,
   createExemplarCounts,
-  default: exemplars
+  exemplars
 };

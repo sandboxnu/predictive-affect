@@ -1,5 +1,5 @@
-const jsPsych = require("jspsych");
-
+require("jspsych");
+const { jsPsych } = global; // limitation of the library
 const {
   generateImageHTML,
   generateImageHTMLNoDot,
@@ -12,9 +12,8 @@ const {
 } = require("./utils/imageUtils");
 const { saveJSONAsCSV } = require('./utils/fileUtils')
 const { randomlyPickFromList, randomlyPickBetween } = require("./utils/randomUtils");
-const { exemplars, createExemplarCounts } = require("./exemplars");
-const param = require("./param");
-
+const { exemplars, createExemplarCounts, normalizeExemplars } = require("./exemplars");
+const { param } = require("./param");
 const timeline = [];
 
 // BEGIN INSTRUCTIONS
@@ -187,8 +186,8 @@ for (let block = 0; block < param["encodingBlocks"]; block += 1) {
 
 // creates a random foil for a single exemplar
 const createFoil = (curTrip, i) => {
-  var result = curTrip.copy();
-  const numImageTested = param["foilTestedOn"][i];
+  let result = curTrip.copy();
+  let numImageTested = param["foilTestedOn"][i];
   const typeTested = param["foilTestedType"][i];
   const curType = curTrip.getImage(numImageTested).valence;
 
@@ -205,8 +204,7 @@ const createFoil = (curTrip, i) => {
   }
 
   newImg = { fileName: newFile, dotPlacement: "N/A: foil", valence: newType };
-
-  result.type[numImageTested] = newType;
+  result.type = result.type.slice(0, numImageTested) + newType + result.type.slice(numImageTested + 1);
   result.changeImageAt(numImageTested, newImg);
 
   return result;

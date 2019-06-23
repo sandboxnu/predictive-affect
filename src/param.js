@@ -46,5 +46,5 @@ if (param.foilTestedOn.length !== param.exemplarTypes.length) {
 }
 
 module.exports = {
-  default: param
+  param
 };

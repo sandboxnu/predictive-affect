@@ -1,3 +1,5 @@
+const { neuImages, negImages } = require('./imageUtils')
+
 /**
  * Returns a random image with the given type, and mutates the list given to ensure that
  * the same image is not selected twice.

@@ -1,5 +1,6 @@
-const jsPsych = require("jspsych");
-const param = require("../param");
+require("jspsych");
+const { jsPsych } = global
+const { param } = require("../param");
 
 // Utilities for use in the html scripts
 const neuImages = [
@@ -238,6 +239,7 @@ module.exports = {
   showFixationDot,
   generateImageHTML,
   generateImageHTMLNoDot,
+  getImagePath,
   isNegativeImg,
   copyImage,
   neuImages,

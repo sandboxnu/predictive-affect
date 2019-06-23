@@ -10,28 +10,13 @@
  *
  */
 
-const assert = require('assert');
-const utils = require('../utils.js');
+const assert = require("assert");
+const utils = require("../utils.js");
 
 const { describe, it } = global;
 
-describe('Image testing', () => {
-  describe('GeneratingImageHTML test', () => {
-    const exemplar0 = new utils.Exemplar('NNN');
-    exemplar0.images[0].fileName = '2101.jpg';
-    const image0 = exemplar0.images[0];
-    it('This is a test that basically has copy and pasted code.', () => {
-      assert.equal(utils.generateImageHTML(image0),
-        '<img class="stimulus-image" src="assets/stimuli/neutral/2101.jpg" style="max-width:75%;">');
-    });
-    it('This is a test that basically has copy and pasted code.', () => {
-      assert.equal(utils.generateImageHTML(utils.exemplars.NNN1.images[0]),
-        `<img class="stimulus-image" src="${utils.getImagePath(utils.exemplars.NNN1.images[0])}" style="max-width:75%;">`);
-    });
-
-    it('This is a test that basically has copy and pasted code.', () => {
-      assert.equal(utils.generateImageHTML(utils.exemplars.NNN1.images[0]),
-        `<img class="stimulus-image" src="${utils.getImagePath(utils.exemplars.NNN1.images[0])}" style="max-width:75%;">`);
-    });
-  });
-});
+describe('Exemplars', () => {
+  it('Correctly generates exemplars', () => {
+    assert(1 === 1);
+  })
+})

@@ -104,21 +104,26 @@ exemplars
   - values are exemplar objects
 */
 
-const denormalizedExemplars = {};
-const exemplars = {};
+const populateExemplars = (exemplars = {}) => {
+  const denormalizedExemplars = {};
 
-for (let i = 0; i < param.exemplarTypes.length; i += 1) {
-  const type = param.exemplarTypes[i];
-  if (!Array.isArray(denormalizedExemplars[type]))
-    denormalizedExemplars[type] = [];
-  denormalizedExemplars[type].push(new Exemplar(type));
-}
-
-Object.keys(denormalizedExemplars).forEach(type => {
-  for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {
-    exemplars[`${type}${i}`] = denormalizedExemplars[type][i - 1];
+  for (let i = 0; i < param.exemplarTypes.length; i += 1) {
+    const type = param.exemplarTypes[i];
+    if (!Array.isArray(denormalizedExemplars[type]))
+      denormalizedExemplars[type] = [];
+    denormalizedExemplars[type].push(new Exemplar(type));
   }
-});
+
+  Object.keys(denormalizedExemplars).forEach(type => {
+    for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {
+      exemplars[`${type}${i}`] = denormalizedExemplars[type][i - 1];
+    }
+  });
+
+  return exemplars;
+};
+
+const exemplars = populateExemplars();
 
 const createExemplarCounts = curExemplars => {
   const exemplarCounts = {};
@@ -147,5 +152,6 @@ const normalizeExemplars = exmps => {
 module.exports = {
   normalizeExemplars,
   createExemplarCounts,
+  populateExemplars,
   exemplars
 };

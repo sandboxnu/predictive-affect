@@ -2622,10 +2622,9 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-jspsych@^6.0.0:
+"jspsych@git+https://git@github.com/sandboxneu/jsPsych.git":
   version "6.0.0"
-  resolved "https://registry.yarnpkg.com/jspsych/-/jspsych-6.0.0.tgz#33cd9a4232e90000007de4f53c99b22f36aba36c"
-  integrity sha512-7krgrn7Hjn+ovwUt1ebjp8Yg72JIV0yJqxC6p7nctFSGPHQtXpvNwA3dE2dUXOgOVVrp4Q6wHpywC7MouGcEzw==
+  resolved "git+https://git@github.com/sandboxneu/jsPsych.git#a9261bf994a806aa253986da960ece4f21d685ae"
 
 killable@^1.0.1:
   version "1.0.1"

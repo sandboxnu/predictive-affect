@@ -4,7 +4,7 @@
   "description": "Psychology experiment designed to test the effects of the valence of an image on the ability to recognize image patterns.",
   "private": true,
   "dependencies": {
-    "jspsych": "^6.0.0"
+    "jspsych": "git+https://git@github.com/sandboxneu/jsPsych.git"
   },
   "devDependencies": {
     "eslint": "^6.0.0",

@@ -2,9 +2,7 @@ const jsPsych = require("jspsych");
 
 const {
   generateImageHTML,
-  generateImageHTMLNoDot
-} = require("./utils/imageUtils");
-const {
+  generateImageHTMLNoDot,
   showFixationDot,
   showIntertrialBreak,
   neuImages,
@@ -12,6 +10,7 @@ const {
   getImagePath,
   isNegativeImg
 } = require("./utils/imageUtils");
+const { saveJSONAsCSV } = require('./utils/fileUtils')
 const { randomlyPickFromList, randomlyPickBetween } = require("./utils/randomUtils");
 const { exemplars, createExemplarCounts } = require("./exemplars");
 const param = require("./param");
@@ -35,7 +34,7 @@ const qToQuit = function() {
   );
 };
 
-var qQuit = {
+const qQuit = {
   type: "call-function",
   func: qToQuit
 };
@@ -449,6 +448,14 @@ const completionCode = {
 
 timeline.push(completionCode);
 
-module.exports = {
-  default: timeline,
-}
+jsPsych.init({
+  timeline: timeline,
+  on_finish: function() {
+      normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
+      saveJSONAsCSV(jsPsych.data.get());
+      jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv', param.participantId + '_rating_output.csv');
+      jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
+      jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
+      jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv', param.participantId + '_testing_output.csv');
+    }
+});

@@ -12,24 +12,10 @@
     <script src="node_modules/jspsych/plugins/jspsych-survey-text.js"></script>
     <script src="node_modules/jspsych/plugins/jspsych-call-function.js"></script>
     <script src="assets/plugins/jspsych-html-double-slider-response.js"></script>
-    <script src="src/experiment.js" type="module"></script>
+    <script src="./src/experiment.js" type="module"></script>
     <link href="predictiveaffect.css" rel="stylesheet" type="text/css"></link>
   </head>
   <body></body>
   <script>
-
-
-  jsPsych.init({
-    timeline: timeline,
-    on_finish: function() {
-        normalizeExemplars(exemplars).forEach((image) => jsPsych.data.get().push(image));
-        saveJSONAsCSV(jsPsych.data.get());
-        jsPsych.data.get().ignore(['trial_type', 'time_elapsed', 'responses', 'stimulus', 'stimuli', 'internal_node_id', 'view_history']).localSave('csv', param.participantId + '_rating_output.csv');
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'encoding').ignore(['internal_node_id', 'trial_index', 'stimulus', 'trial_type']).localSave('csv', param.participantId + '_encoding_output.csv'); 
-        jsPsych.data.get().filterCustom((trial) => trial.trialType === 'testing').ignore(['trial_type', 'time_elapsed', 'stimulus', 'internal_node_id', 'view_history', 'trial_index']).localSave('csv', param.participantId + '_testing_output.csv');
-      }
-  });
-
   </script>
 </html>

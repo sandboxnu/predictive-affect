@@ -114,7 +114,6 @@ const populateExemplars = (param = {}, exemplars = {}) => {
       denormalizedExemplars[type] = [];
     denormalizedExemplars[type].push(new Exemplar(type));
   }
-
   Object.keys(denormalizedExemplars).forEach(type => {
     for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {
       exemplars[`${type}${i}`] = denormalizedExemplars[type][i - 1];

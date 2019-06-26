@@ -104,11 +104,12 @@ exemplars
   - values are exemplar objects
 */
 
-const populateExemplars = (exemplars = {}) => {
+const populateExemplars = (param = {}, exemplars = {}) => {
   const denormalizedExemplars = {};
 
-  for (let i = 0; i < param.exemplarTypes.length; i += 1) {
-    const type = param.exemplarTypes[i];
+  const totalExemplarsCount = param.exemplarTypes.length * param.numExemplarsPerType;
+  for (let i = 0; i < totalExemplarsCount; i += 1) {
+    const type = param.exemplarTypes[i % param.exemplarTypes.length];
     if (!Array.isArray(denormalizedExemplars[type]))
       denormalizedExemplars[type] = [];
     denormalizedExemplars[type].push(new Exemplar(type));
@@ -123,7 +124,7 @@ const populateExemplars = (exemplars = {}) => {
   return exemplars;
 };
 
-const exemplars = populateExemplars();
+const exemplars = populateExemplars(param);
 
 const createExemplarCounts = curExemplars => {
   const exemplarCounts = {};
@@ -150,6 +151,7 @@ const normalizeExemplars = exmps => {
 };
 
 module.exports = {
+  Exemplar,
   normalizeExemplars,
   createExemplarCounts,
   populateExemplars,

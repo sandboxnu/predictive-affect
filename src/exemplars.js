@@ -43,12 +43,9 @@ class Exemplar {
   }
 
   getImages() {
-    /*return param.randomTriplets
-      ? this.images.slice().sort(() => Math.random() - 0.5)
-      : [...this.images];*/
-
-    return (param.randomTriplets || this.isRand) ? this.images.slice().sort( (x, y) => Math.random() - 0.5): [...this.images];
-
+    return (param.randomTriplets || this.isRand)
+      ? this.images.slice().sort( (x, y) => Math.random() - 0.5)
+      : [...this.images];
   }
 
   getImageNames() {

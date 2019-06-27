@@ -446,9 +446,9 @@ allImagesShown.forEach(function(image) {
 const completionCode = {
   type: "instructions",
   pages: [
-    "<div><p>You MTurk completetion code is " +
+    "<div><p>Your MTurk completetion code is " +
       param.completionCode +
-      " </p></div>"
+      " </p><p>Press J to download experiment data.</p></div>"
   ],
   key_forward: "j"
 };
@@ -458,10 +458,10 @@ timeline.push(completionCode);
 jsPsych.init({
   timeline: timeline,
   on_finish: function() {
+    console.log('DONE')
     normalizeExemplars(exemplars).forEach(image =>
       jsPsych.data.get().push(image)
     );
-    saveJSONAsCSV(jsPsych.data.get());
     jsPsych.data
       .get()
       .ignore([

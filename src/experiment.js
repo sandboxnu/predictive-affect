@@ -1,4 +1,5 @@
 const jsPsych = require("jspsych");
+const JSZip = require("jszip");
 const {
   generateImageHTML,
   generateImageHTMLNoDot,
@@ -462,7 +463,7 @@ jsPsych.init({
     normalizeExemplars(exemplars).forEach(image =>
       jsPsych.data.get().push(image)
     );
-    jsPsych.data
+    const ratingOutput = new Blob([jsPsych.data
       .get()
       .ignore([
         "trial_type",
@@ -473,18 +474,17 @@ jsPsych.init({
         "internal_node_id",
         "view_history"
       ])
-      .localSave("csv", param.participantId + "_rating_output.csv");
-    jsPsych.data
+      .csv()
+    ], { type: 'text/csv' })
+      //.localSave("csv", param.participantId + "_rating_output.csv");
+    const encodingOutput = new Blob([jsPsych.data
       .get()
       .filterCustom(trial => trial.trialType === "encoding")
       .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
-      .localSave("csv", param.participantId + "_encoding_output.csv");
-    jsPsych.data
-      .get()
-      .filterCustom(trial => trial.trialType === "encoding")
-      .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
-      .localSave("csv", param.participantId + "_encoding_output.csv");
-    jsPsych.data
+      .csv()
+    ], { type: 'text/csv' })
+      // .localSave("csv", param.participantId + "_encoding_output.csv");
+    const testingOutput = new Blob([jsPsych.data
       .get()
       .filterCustom(trial => trial.trialType === "testing")
       .ignore([
@@ -495,6 +495,22 @@ jsPsych.init({
         "view_history",
         "trial_index"
       ])
-      .localSave("csv", param.participantId + "_testing_output.csv");
+      .csv()
+    ], { type: 'text/csv' })
+      //.localSave("csv", param.participantId + "_testing_output.csv");
+    const zip = new JSZip();
+    const folder = zip.folder('experiment-data-' + participantId);
+    const el = jsPsych.getDisplayElement();
+    folder.file('encoding_data_' + participantId, encodingOutput)
+    folder.file('testing_data_' + participantId, testingOutput)
+    folder.file('rating_data_' + participantId, ratingOutput)
+    // TODO write my own code -- this is from jspsych
+    zip.generateAsync({type: 'blob'})
+      .then(zipBlob => {
+        const blobURL = window.URL.createObjectURL(zipBlob)
+        const filename = "experiment-output.zip"
+        display_element.insertAdjacentHTML('beforeend','<a id="jspsych-download-as-text-link" style="display:none;" download="'+filename+'" href="'+blobURL+'">click to download</a>');
+document.getElementById('jspsych-download-as-text-link').click();
+      })
   }
 });

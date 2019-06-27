@@ -13,6 +13,8 @@ class Exemplar {
   constructor(type) {
     this.type = type;
     this.images = [];
+    this.isRand = (type.startsWith("rand_"));
+    this.type = this.isRand ? type.replace("rand_", "") : type;
     this.populateImages();
   }
 
@@ -20,6 +22,7 @@ class Exemplar {
     if (this == null || typeof this !== "object") return this;
     const copy = new Exemplar(this.type);
     copy.images = [];
+    copy.isRand = this.isRand;
     this.getImages().forEach(image => {
       copy.images.push(copyImage(image));
     });
@@ -40,9 +43,12 @@ class Exemplar {
   }
 
   getImages() {
-    return param.randomTriplets
+    /*return param.randomTriplets
       ? this.images.slice().sort(() => Math.random() - 0.5)
-      : [...this.images];
+      : [...this.images];*/
+
+    return (param.randomTriplets || this.isRand) ? this.images.slice().sort( (x, y) => Math.random() - 0.5): [...this.images];
+
   }
 
   getImageNames() {
@@ -110,9 +116,10 @@ const populateExemplars = (param = {}, exemplars = {}) => {
   const totalExemplarsCount = param.exemplarTypes.length * param.numExemplarsPerType;
   for (let i = 0; i < totalExemplarsCount; i += 1) {
     const type = param.exemplarTypes[i % param.exemplarTypes.length];
-    if (!Array.isArray(denormalizedExemplars[type]))
-      denormalizedExemplars[type] = [];
-    denormalizedExemplars[type].push(new Exemplar(type));
+    const nonRandomType = type.replace("rand_", "")
+    if (!Array.isArray(denormalizedExemplars[nonRandomType])) denormalizedExemplars[nonRandomType] = [];
+      denormalizedExemplars[nonRandomType].push(new Exemplar(type));
+    denormalizedExemplars[nonRandomType].push(new Exemplar(type));
   }
   Object.keys(denormalizedExemplars).forEach(type => {
     for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {

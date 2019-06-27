@@ -1,7 +1,7 @@
 const param = {};
 param.randomTriplets = false; /* false if the images in the triplets are in the same order every
                                  block/phase, true if they are randomly shuffled before appearing */
-param.exemplarTypes = ["NNN", "NNB", "BNN", "BBB"]; // the different types of exemplar. these can be triplets, pairs, etc
+param.exemplarTypes = ["NNN", "rand_NNB", "BNN", "BBB"]; // the different types of exemplar. these can be triplets, pairs, etc
 param.numExemplarsPerType = 2; // number of exemplars per type (see exemplarTypes variable)
 param.imageStructLength = (
   param.exemplarTypes[0] || []

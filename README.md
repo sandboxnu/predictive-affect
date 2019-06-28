@@ -5,7 +5,14 @@ It measures the effect a person's feeling about an image has on their memory of 
 
 ## Running the Experiment
 
-Due to the nature of the experiment and specifics of the task, the experiment is 100% static and can be run by simply opening up index.html. 
+`yarn` will install the all the dependencies
+
+`yarn build` will build the site. You need to run this after you make changes so they actually get built
+
+`yarn start` will start a server that hosts the app on http://localhost:8080
+
+`yarn test` will run tests with Mocha
+
 As a prerequisite, you will need the images associated with the trials.
 
 ## Contributing

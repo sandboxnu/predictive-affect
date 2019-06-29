@@ -1,66 +1,26 @@
+const JSZip = require('jszip')
 
-/* FILE SAVING */
-
-// taken from jspsych codebase
-// fixme: abstract into our own fork of jspsych
-const JSON2CSV = (objArray) => {
-  const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
-  let line = '';
-  let result = '';
-  const columns = [];
-
-  let i = 0;
-  const keyLoop = (key) => {
-    let keyString = `${key}`;
-    keyString = `"${keyString.replace(/"/g, '""')}",`;
-    if (!columns.includes(key)) {
-      columns[i] = key;
-      line += keyString;
-      i += 1;
+/**
+ * Saves given files to the local device in a compressed folder.
+ * @param {*} files list of filename objects {name: String, data: JSON}
+ * @param {*} folderName name of the folder to be downloaded
+ * @param {*} displayElement the current jsPsych displayElement
+ */
+const saveJsPsychFilesAsZip = (files, folderName, displayElement) => {
+    const zip = new JSZip();
+    const folder = zip.folder(folderName);
+    for (let file of files) {
+      folder.file(file.name, file.data);
     }
-  };
-  for (let j = 0; j < array.length; j += 1) {
-    Object.keys(array[j]).forEach(keyLoop);
-  }
-
-  line = line.slice(0, -1);
-  result += `${line}\r\n`;
-
-  for (i = 0; i < array.length; i += 1) {
-    let curLine = '';
-    for (let j = 0; j < columns.length; j += 1) {
-      const value = (typeof array[i][columns[j]] === 'undefined') ? '' : array[i][columns[j]];
-      const valueString = `${value}`;
-      curLine += `"${valueString.replace(/"/g, '""')}",`;
+    zip.generateAsync({ type: 'blob' })
+      .then(zipBlob => {
+        const blobURL = window.URL.createObjectURL(zipBlob)
+        const filename = "experiment-output.zip"
+        displayElement.insertAdjacentHTML('beforeend','<a id="jspsych-download-as-text-link" style="display:none;" download="'+filename+'" href="'+blobURL+'">click to download</a>');
+        document.getElementById('jspsych-download-as-text-link').click();
+      });
     }
-
-    curLine = curLine.slice(0, -1);
-    result += `${curLine}\r\n`;
-  }
-
-  return result;
-};
-
-const saveJSONAsCSV = (json) => {
-  const csv = JSON2CSV(json);
-  const filename = 'lol.csv';
-  var file = new Blob([csv], { type: 'csv' });
-  if (window.navigator.msSaveOrOpenBlob) // IE10+
-      window.navigator.msSaveOrOpenBlob(file, filename);
-  else { // Others
-      var a = document.createElement("a"),
-              url = URL.createObjectURL(file);
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function() {
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);  
-      }, 0); 
-  } 
-};
 
 module.exports = {
-  default: saveJSONAsCSV
+  saveJsPsychFilesAsZip
 }

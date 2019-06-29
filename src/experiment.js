@@ -1,5 +1,5 @@
 const jsPsych = require("jspsych");
-const JSZip = require("jszip");
+const { saveJsPsychFilesAsZip } = require("./utils/fileUtils");
 const {
   generateImageHTML,
   generateImageHTMLNoDot,
@@ -10,7 +10,6 @@ const {
   getImagePath,
   isNegativeImg
 } = require("./utils/imageUtils");
-const { saveJSONAsCSV } = require("./utils/fileUtils");
 const {
   randomlyPickFromList,
   randomlyPickBetween
@@ -459,58 +458,67 @@ timeline.push(completionCode);
 jsPsych.init({
   timeline: timeline,
   on_finish: function() {
-    console.log('DONE')
     normalizeExemplars(exemplars).forEach(image =>
       jsPsych.data.get().push(image)
     );
-    const ratingOutput = new Blob([jsPsych.data
-      .get()
-      .ignore([
-        "trial_type",
-        "time_elapsed",
-        "responses",
-        "stimulus",
-        "stimuli",
-        "internal_node_id",
-        "view_history"
-      ])
-      .csv()
-    ], { type: 'text/csv' })
-      //.localSave("csv", param.participantId + "_rating_output.csv");
-    const encodingOutput = new Blob([jsPsych.data
-      .get()
-      .filterCustom(trial => trial.trialType === "encoding")
-      .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
-      .csv()
-    ], { type: 'text/csv' })
-      // .localSave("csv", param.participantId + "_encoding_output.csv");
-    const testingOutput = new Blob([jsPsych.data
-      .get()
-      .filterCustom(trial => trial.trialType === "testing")
-      .ignore([
-        "trial_type",
-        "time_elapsed",
-        "stimulus",
-        "internal_node_id",
-        "view_history",
-        "trial_index"
-      ])
-      .csv()
-    ], { type: 'text/csv' })
-      //.localSave("csv", param.participantId + "_testing_output.csv");
-    const zip = new JSZip();
-    const folder = zip.folder('experiment-data-' + participantId);
-    const el = jsPsych.getDisplayElement();
-    folder.file('encoding_data_' + participantId, encodingOutput)
-    folder.file('testing_data_' + participantId, testingOutput)
-    folder.file('rating_data_' + participantId, ratingOutput)
-    // TODO write my own code -- this is from jspsych
-    zip.generateAsync({type: 'blob'})
-      .then(zipBlob => {
-        const blobURL = window.URL.createObjectURL(zipBlob)
-        const filename = "experiment-output.zip"
-        display_element.insertAdjacentHTML('beforeend','<a id="jspsych-download-as-text-link" style="display:none;" download="'+filename+'" href="'+blobURL+'">click to download</a>');
-document.getElementById('jspsych-download-as-text-link').click();
-      })
+    const ratingOutput = new Blob(
+      [
+        jsPsych.data
+          .get()
+          .ignore([
+            "trial_type",
+            "time_elapsed",
+            "responses",
+            "stimulus",
+            "stimuli",
+            "internal_node_id",
+            "view_history"
+          ])
+          .csv()
+      ],
+      { type: "text/csv" }
+    );
+    const encodingOutput = new Blob(
+      [
+        jsPsych.data
+          .get()
+          .filterCustom(trial => trial.trialType === "encoding")
+          .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
+          .csv()
+      ],
+      { type: "text/csv" }
+    );
+    const testingOutput = new Blob(
+      [
+        jsPsych.data
+          .get()
+          .filterCustom(trial => trial.trialType === "testing")
+          .ignore([
+            "trial_type",
+            "time_elapsed",
+            "stimulus",
+            "internal_node_id",
+            "view_history",
+            "trial_index"
+          ])
+          .csv()
+      ],
+      { type: "text/csv" }
+    );
+    const folderName = "experiment-data-" + param.participantId;
+    const filenameEncoding = {
+      name: `encoding_data_${param.participantId}.csv`,
+      data: encodingOutput
+    };
+    const filenameTesting = {
+      name: `testing_data_${param.participantId}.csv`,
+      data: testingOutput
+    };
+    const filenameRating = {
+      name: `rating_data_${param.participantId}.csv`,
+      data: ratingOutput
+    };
+    const files = [filenameEncoding, filenameTesting, filenameRating];
+    saveJsPsychFilesAsZip(files, folderName, jsPsych.getDisplayElement());
   }
 });

@@ -1,8 +1,8 @@
 const param = {};
 param.randomTriplets = false; /* false if the images in the triplets are in the same order every
                                  block/phase, true if they are randomly shuffled before appearing */
-param.exemplarTypes = ["NNN"]; // the different types of exemplar. these can be triplets, pairs, etc
-param.numExemplarsPerType = 1; // number of exemplars per type (see exemplarTypes variable)
+param.exemplarTypes = ["NNN", "BBB"]; // the different types of exemplar. these can be triplets, pairs, etc
+param.numExemplarsPerType = 2; // number of exemplars per type (see exemplarTypes variable)
 param.imageStructLength = (
   param.exemplarTypes[0] || []
 ).length; /* INVARIANT the exemplarTypes are assumed to be the same length */
@@ -20,10 +20,12 @@ param.trialsPerEncodingBlock =
   param.exemplarTypes.length; // total number of trials per block
 param.foilTestedOn = [
   1,
+  0,
 ]; /* for every exemplar, the index of the image which the foil is
       different from the original triplet */
 param.foilTestedType = [
   false,
+  true,
 ]; /* for every exemplar, whether the replaced image in the foil is the same affect as the image it replaces. */
 param.completionCode = Math.floor(Math.random() * 1000000000);
 

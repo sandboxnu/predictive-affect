@@ -2622,9 +2622,9 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
-"jspsych@git+https://git@github.com/sandboxneu/jsPsych.git":
+"jspsych@git+https://git@github.com/sandboxneu/jsPsych.git#1b326d2":
   version "6.0.0"
-  resolved "git+https://git@github.com/sandboxneu/jsPsych.git#a9261bf994a806aa253986da960ece4f21d685ae"
+  resolved "git+https://git@github.com/sandboxneu/jsPsych.git#1b326d263865a4cdbc6881d140bc3f474b8ba88d"
 
 killable@^1.0.1:
   version "1.0.1"

@@ -14,9 +14,9 @@ const paramSimple = {
 }
 const exemplarsFromSimple = {
   NNN1: new Exemplar('NNN'),
-  BBB1: new Exemplar('BBB'),
+  BBB1: new Exemplar('rand_BBB'),
   NNB1: new Exemplar('NNB'),
-  NBB1: new Exemplar('NBB'),
+  NBB1: new Exemplar('rand_NBB'),
 }
 const paramLotsPerType = {
   exemplarTypes: ['NNN', 'BBB'],
@@ -50,6 +50,11 @@ describe("Exemplars from simple param", () => {
     assert.ok(exemplars.NNN1.type === 'NNN');
     assert.ok(exemplars.NNB1.type === 'NNB');
     assert.ok(exemplars.NBB1.type === 'NBB');
+    assert.ok(exemplars.NNN1.isRand === false);
+    assert.ok(exemplars.NNB1.isRand === false);
+    assert.ok(exemplars.BBB1.isRand === true);
+    assert.ok(exemplars.NBB1.isRand === true);
+
   });
 });
 

@@ -114,8 +114,8 @@ const populateExemplars = (param = {}, exemplars = {}) => {
   for (let i = 0; i < totalExemplarsCount; i += 1) {
     const type = param.exemplarTypes[i % param.exemplarTypes.length];
     const nonRandomType = type.replace("rand_", "")
-    if (!Array.isArray(denormalizedExemplars[nonRandomType])) denormalizedExemplars[nonRandomType] = [];
-      denormalizedExemplars[nonRandomType].push(new Exemplar(type));
+    if (!Array.isArray(denormalizedExemplars[nonRandomType]))
+      denormalizedExemplars[nonRandomType] = [];
     denormalizedExemplars[nonRandomType].push(new Exemplar(type));
   }
   Object.keys(denormalizedExemplars).forEach(type => {

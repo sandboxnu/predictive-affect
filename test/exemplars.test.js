@@ -9,12 +9,12 @@ global.document = window.document;
 
 const { populateExemplars, Exemplar } = require("../src/exemplars");
 const paramSimple = {
-  exemplarTypes: ['NNN', 'BBB', 'NNB', 'NBB'],
+  exemplarTypes: ['NNN', 'BBB', 'NNB', 'rand_NBB'],
   numExemplarsPerType: 1
 }
 const exemplarsFromSimple = {
   NNN1: new Exemplar('NNN'),
-  BBB1: new Exemplar('rand_BBB'),
+  BBB1: new Exemplar('BBB'),
   NNB1: new Exemplar('NNB'),
   NBB1: new Exemplar('rand_NBB'),
 }
@@ -52,9 +52,8 @@ describe("Exemplars from simple param", () => {
     assert.ok(exemplars.NBB1.type === 'NBB');
     assert.ok(exemplars.NNN1.isRand === false);
     assert.ok(exemplars.NNB1.isRand === false);
-    assert.ok(exemplars.BBB1.isRand === true);
+    assert.ok(exemplars.BBB1.isRand === false);
     assert.ok(exemplars.NBB1.isRand === true);
-
   });
 });
 

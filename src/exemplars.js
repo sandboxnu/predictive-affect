@@ -13,8 +13,8 @@ class Exemplar {
   constructor(type) {
     this.type = type;
     this.images = [];
-    this.isRand = (type.startsWith("rand_"));
-    this.type = this.isRand ? type.replace("rand_", "") : type;
+    this.isRand = type.startsWith("rand_");
+    this.type = type.replace("rand_", "");
     this.populateImages();
   }
 
@@ -44,7 +44,7 @@ class Exemplar {
 
   getImages() {
     return (param.randomTriplets || this.isRand)
-      ? this.images.slice().sort( (x, y) => Math.random() - 0.5)
+      ? this.images.slice().sort( () => Math.random() - 0.5)
       : [...this.images];
   }
 

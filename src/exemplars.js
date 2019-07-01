@@ -11,7 +11,6 @@ const {
  */
 class Exemplar {
   constructor(type) {
-    this.type = type;
     this.images = [];
     this.isRand = type.startsWith("rand_");
     this.type = type.replace("rand_", "");

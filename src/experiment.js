@@ -447,13 +447,21 @@ const completionCode = {
   type: "instructions",
   pages: [
     "<div><p>Your MTurk completetion code is " +
-      param.completionCode +
-      " </p><p>Press J to download experiment data.</p></div>"
+      param.completionCode
   ],
-  key_forward: "j"
+  key_forward: "rightarrow"
 };
 
+const download = {
+  type: "instructions",
+  pages: [
+    ""
+  ],
+  key_forward: "d"
+}
+
 timeline.push(completionCode);
+timeline.push(download);
 
 jsPsych.init({
   timeline: timeline,

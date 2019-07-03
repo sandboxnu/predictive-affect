@@ -1,4 +1,5 @@
 const jsPsych = require("jspsych");
+const { saveJsPsychFilesAsZip } = require("./utils/fileUtils");
 const {
   generateImageHTML,
   generateImageHTMLNoDot,
@@ -9,7 +10,6 @@ const {
   getImagePath,
   isNegativeImg
 } = require("./utils/imageUtils");
-const { saveJSONAsCSV } = require("./utils/fileUtils");
 const {
   randomlyPickFromList,
   randomlyPickBetween
@@ -446,14 +446,22 @@ allImagesShown.forEach(function(image) {
 const completionCode = {
   type: "instructions",
   pages: [
-    "<div><p>You MTurk completetion code is " +
-      param.completionCode +
-      " </p></div>"
+    "<div><p>Your MTurk completetion code is " +
+      param.completionCode
   ],
-  key_forward: "j"
+  key_forward: "rightarrow"
 };
 
+const download = {
+  type: "instructions",
+  pages: [
+    ""
+  ],
+  key_forward: "d"
+}
+
 timeline.push(completionCode);
+timeline.push(download);
 
 jsPsych.init({
   timeline: timeline,
@@ -461,40 +469,64 @@ jsPsych.init({
     normalizeExemplars(exemplars).forEach(image =>
       jsPsych.data.get().push(image)
     );
-    saveJSONAsCSV(jsPsych.data.get());
-    jsPsych.data
-      .get()
-      .ignore([
-        "trial_type",
-        "time_elapsed",
-        "responses",
-        "stimulus",
-        "stimuli",
-        "internal_node_id",
-        "view_history"
-      ])
-      .localSave("csv", param.participantId + "_rating_output.csv");
-    jsPsych.data
-      .get()
-      .filterCustom(trial => trial.trialType === "encoding")
-      .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
-      .localSave("csv", param.participantId + "_encoding_output.csv");
-    jsPsych.data
-      .get()
-      .filterCustom(trial => trial.trialType === "encoding")
-      .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
-      .localSave("csv", param.participantId + "_encoding_output.csv");
-    jsPsych.data
-      .get()
-      .filterCustom(trial => trial.trialType === "testing")
-      .ignore([
-        "trial_type",
-        "time_elapsed",
-        "stimulus",
-        "internal_node_id",
-        "view_history",
-        "trial_index"
-      ])
-      .localSave("csv", param.participantId + "_testing_output.csv");
+    const ratingOutput = new Blob(
+      [
+        jsPsych.data
+          .get()
+          .ignore([
+            "trial_type",
+            "time_elapsed",
+            "responses",
+            "stimulus",
+            "stimuli",
+            "internal_node_id",
+            "view_history"
+          ])
+          .csv()
+      ],
+      { type: "text/csv" }
+    );
+    const encodingOutput = new Blob(
+      [
+        jsPsych.data
+          .get()
+          .filterCustom(trial => trial.trialType === "encoding")
+          .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
+          .csv()
+      ],
+      { type: "text/csv" }
+    );
+    const testingOutput = new Blob(
+      [
+        jsPsych.data
+          .get()
+          .filterCustom(trial => trial.trialType === "testing")
+          .ignore([
+            "trial_type",
+            "time_elapsed",
+            "stimulus",
+            "internal_node_id",
+            "view_history",
+            "trial_index"
+          ])
+          .csv()
+      ],
+      { type: "text/csv" }
+    );
+    const folderName = "experiment-data-" + param.participantId;
+    const filenameEncoding = {
+      name: `encoding_data_${param.participantId}.csv`,
+      data: encodingOutput
+    };
+    const filenameTesting = {
+      name: `testing_data_${param.participantId}.csv`,
+      data: testingOutput
+    };
+    const filenameRating = {
+      name: `rating_data_${param.participantId}.csv`,
+      data: ratingOutput
+    };
+    const files = [filenameEncoding, filenameTesting, filenameRating];
+    saveJsPsychFilesAsZip(files, folderName, jsPsych.getDisplayElement());
   }
 });

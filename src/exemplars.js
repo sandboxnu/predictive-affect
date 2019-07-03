@@ -84,7 +84,7 @@ class Exemplar {
 /* EXEMPLARS */
 
 // current list of used stimuli
-const currentList = [];
+let currentList = [];
 
 // current sides of grey dots, for counterbalancing
 const dotSides = [];
@@ -107,6 +107,10 @@ exemplars
 */
 
 const populateExemplars = (param = {}, exemplars = {}) => {
+  if (currentList.length > 0) {
+    /* CONSTRAINT: can only have one valid set of exemplars at a time */
+    currentList = []
+  }
   const denormalizedExemplars = {};
 
   const totalExemplarsCount = param.exemplarTypes.length * param.numExemplarsPerType;

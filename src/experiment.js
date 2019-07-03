@@ -193,8 +193,8 @@ for (let block = 0; block < param["encodingBlocks"]; block += 1) {
 // creates a random foil for a single exemplar
 const createFoil = (curTrip, i) => {
   let result = curTrip.copy();
-  let numImageTested = param["foilTestedOn"][i];
-  const typeTested = param["foilTestedType"][i];
+  let numImageTested = param["foilTestedOn"][i % param["numExemplarsPerType"]];
+  const typeTested = param["foilTestedType"][i % param["numExemplarsPerType"]];
   const curType = curTrip.getImage(numImageTested).valence;
 
   const foilType = curType === "N" ? "B" : "N";

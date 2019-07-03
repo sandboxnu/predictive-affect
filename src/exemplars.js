@@ -11,8 +11,9 @@ const {
  */
 class Exemplar {
   constructor(type) {
-    this.type = type;
     this.images = [];
+    this.isRand = type.startsWith("rand_");
+    this.type = type.replace("rand_", "");
     this.populateImages();
   }
 
@@ -20,6 +21,7 @@ class Exemplar {
     if (this == null || typeof this !== "object") return this;
     const copy = new Exemplar(this.type);
     copy.images = [];
+    copy.isRand = this.isRand;
     this.getImages().forEach(image => {
       copy.images.push(copyImage(image));
     });
@@ -40,8 +42,8 @@ class Exemplar {
   }
 
   getImages() {
-    return param.randomTriplets
-      ? this.images.slice().sort(() => Math.random() - 0.5)
+    return (param.randomTriplets || this.isRand)
+      ? this.images.slice().sort( () => Math.random() - 0.5)
       : [...this.images];
   }
 
@@ -82,7 +84,7 @@ class Exemplar {
 /* EXEMPLARS */
 
 // current list of used stimuli
-const currentList = [];
+let currentList = [];
 
 // current sides of grey dots, for counterbalancing
 const dotSides = [];
@@ -105,14 +107,19 @@ exemplars
 */
 
 const populateExemplars = (param = {}, exemplars = {}) => {
+  if (currentList.length > 0) {
+    /* CONSTRAINT: can only have one valid set of exemplars at a time */
+    currentList = []
+  }
   const denormalizedExemplars = {};
 
   const totalExemplarsCount = param.exemplarTypes.length * param.numExemplarsPerType;
   for (let i = 0; i < totalExemplarsCount; i += 1) {
     const type = param.exemplarTypes[i % param.exemplarTypes.length];
-    if (!Array.isArray(denormalizedExemplars[type]))
-      denormalizedExemplars[type] = [];
-    denormalizedExemplars[type].push(new Exemplar(type));
+    const nonRandomType = type.replace("rand_", "")
+    if (!Array.isArray(denormalizedExemplars[nonRandomType]))
+      denormalizedExemplars[nonRandomType] = [];
+    denormalizedExemplars[nonRandomType].push(new Exemplar(type));
   }
   Object.keys(denormalizedExemplars).forEach(type => {
     for (let i = 1; i <= denormalizedExemplars[type].length; i += 1) {

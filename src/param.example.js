@@ -21,21 +21,25 @@ param.trialsPerEncodingBlock =
 param.foilTestedOn = [
   1,
   0,
+  0,
+  1
 ]; /* for every exemplar, the index of the image which the foil is
       different from the original triplet */
 param.foilTestedType = [
   false,
   true,
+  false,
+  true
 ]; /* for every exemplar, whether the replaced image in the foil is the same affect as the image it replaces. */
 param.completionCode = Math.floor(Math.random() * 1000000000);
 
-if (param.foilTestedOn.length !== param.exemplarTypes.length) {
+if (param.foilTestedOn.length !== param.exemplarTypes.length * numExemplarsPerType) {
   throw new Error(
     "param.foilTestedOn and param.exemplarTypes match up by position, so they must be the same length."
   );
 }
 
-if (param.foilTestedOn.length !== param.exemplarTypes.length) {
+if (param.foilTestedOn.length !== param.exemplarTypes.length * numExemplarsPerType) {
   throw new Error(
     "param.foilTestedType and param.exemplarTypes match up by position, so they must be the same length."
   );

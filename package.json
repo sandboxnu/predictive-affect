@@ -4,7 +4,8 @@
   "description": "Psychology experiment designed to test the effects of the valence of an image on the ability to recognize image patterns.",
   "private": true,
   "dependencies": {
-    "jspsych": "git+https://git@github.com/sandboxneu/jsPsych.git#1b326d2"
+    "jspsych": "git+https://git@github.com/sandboxneu/jsPsych.git#1b326d2",
+    "jszip": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^6.0.0",
@@ -22,7 +23,8 @@
     "start": "webpack-dev-server",
     "test": "mocha",
     "format": "prettier --write ./**/*.js",
-    "lint": "eslint ./**/*.js"
+    "lint": "eslint ./**/*.js",
+    "postinstall": "[ -f src/param.js ] || cp src/param.example.js src/param.js"
   },
   "repository": "https://github.com/sandboxneu/predictive-affect.git",
   "keywords": [

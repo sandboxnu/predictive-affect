@@ -37,6 +37,11 @@ const paramLotsPerType = {
   numExemplarsPerType: 13,
 }
 
+const paramTiny = {
+  exemplarTypes: ['NNN'],
+  numExemplarsPerType: 1,
+}
+
 describe("Exemplars from simple param", () => {
   let exemplars;
   before(() => {
@@ -123,3 +128,16 @@ describe('Exemplars from many-per-type param', () => {
     }
   });
 });
+
+describe('Exemplar from tiny param', () => {
+  let exemplars;
+  before(() => {
+    exemplars = populateExemplars(paramTiny);
+  });
+  it("generates only one exemplar", () => {
+    assert.equal(Object.keys(exemplars).length, 1);
+  });
+  it("generates an exemplar with exactly three images", () => {
+    assert.equal(exemplars['NNN1'].getImages().length, 3)
+  })
+})

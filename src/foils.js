@@ -6,10 +6,10 @@ const {
 } = require("./utils/imageUtils");
 
 // creates a random foil for a single exemplar
-const createFoil = (curTrip, i) => {
+const createFoil = (curTrip, i, param) => {
   let result = curTrip.copy();
-  let numImageTested = param["foilTestedOn"][i % param["numExemplarsPerType"]];
-  const typeTested = param["foilTestedType"][i % param["numExemplarsPerType"]];
+  let numImageTested = param["foilTestedOn"][i];
+  const typeTested = param["foilTestedType"][i];
   const curType = curTrip.getImage(numImageTested).valence;
 
   const foilType = curType === "N" ? "B" : "N";
@@ -35,17 +35,17 @@ const createFoil = (curTrip, i) => {
 };
 
 // creates a foil for every exemplar
-const createFoils = (exemplars) => {
+const createFoils = (exemplars, param) => {
   var result = [];
   var count = 0;
   for (let i in exemplars) {
-    result[i] = createFoil(exemplars[i], count);
+    result[i] = createFoil(exemplars[i], count, param);
     count++;
   }
   return result;
 };
 
-var foils = createFoils(exemplars);
+var foils = createFoils(exemplars, param);
 
 // returns the foil of the given triplet
 const getFoil = (correctTriplet, i) => {

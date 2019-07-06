@@ -12,21 +12,25 @@ const { createFoils} = require("../src/foils");
 
 const paramSimple = {
   exemplarTypes: ['NNN', 'BBB', 'NNB', 'NBB'],
-  numExemplarsPerType: 1
+  numExemplarsPerType: 1,
+  foilTestedOn: [1, 0, 0, 1],
+  foilTestedType: [false, true, false, true]
 }
 
 const paramHalfRand = {
   exemplarTypes: ['NNN', 'rand_BBB', 'NNB', 'rand_NBB'],
-  numExemplarsPerType: 1
+  numExemplarsPerType: 1,
+  foilTestedOn: [1, 0, 0, 1],
+  foilTestedType: [false, true, false, true]
 }
 
 describe("Foil from simple params", () => {
   let exemplars, foils;
   before(() => {
     exemplars = populateExemplars(paramSimple);
-    foils = createFoils(exemplars);
+    foils = createFoils(exemplars, paramSimple);
     randExemplars = populateExemplars(paramHalfRand)
-    randFoils = createFoils(randExemplars);
+    randFoils = createFoils(randExemplars, paramHalfRand);
   });
 
   it("created the correct number of foils", () => {

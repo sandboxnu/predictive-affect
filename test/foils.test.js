@@ -58,19 +58,21 @@ describe("Foil from simple params", () => {
       assert.equal(foil.getImages().length, 3);
     }
   });
-  it("generates foils with the correct information in relation to the exemplars", () => {
-    assert.ok(randFoils.BBB1.type !== 'BBB');
+  it("generates foils with the correct information in relation to the exemplars and params", () => {
+    assert.ok(randFoils.BBB1.type === 'NBB');
     assert.ok(randFoils.NNN1.type === 'NNN');
     assert.ok(randFoils.NNB1.type === 'NNB');
-    assert.ok(randFoils.NBB1.type !== 'NBB');
-    assert.ok(randFoils.NNN1.isRand === false);
-    assert.ok(randFoils.NNB1.isRand === false);
-    assert.ok(randFoils.BBB1.isRand === true);
-    assert.ok(randFoils.NBB1.isRand === true);
+    assert.ok(randFoils.NBB1.type === 'NNB');
     assert.ok(randExemplars.BBB1.type === 'BBB');
     assert.ok(randExemplars.NNN1.type === 'NNN');
     assert.ok(randExemplars.NNB1.type === 'NNB');
     assert.ok(randExemplars.NBB1.type === 'NBB');
+  });
+  it("preserves randomness", () => {
+    assert.ok(randFoils.NNN1.isRand === false);
+    assert.ok(randFoils.NNB1.isRand === false);
+    assert.ok(randFoils.BBB1.isRand === true);
+    assert.ok(randFoils.NBB1.isRand === true);
     assert.ok(randExemplars.NNN1.isRand === false);
     assert.ok(randExemplars.NNB1.isRand === false);
     assert.ok(randExemplars.BBB1.isRand === true);

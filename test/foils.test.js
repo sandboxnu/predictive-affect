@@ -24,7 +24,7 @@ const paramHalfRand = {
   foilTestedType: [false, true, false, true]
 }
 
-describe("Foil from simple params", () => {
+describe("Foil generation from simple params", () => {
   let exemplars, foils;
   before(() => {
     exemplars = populateExemplars(paramSimple);
@@ -33,32 +33,32 @@ describe("Foil from simple params", () => {
     randFoils = createFoils(randExemplars, paramHalfRand);
   });
 
-  it("created the correct number of foils", () => {
+  it("creats the correct number of foils", () => {
     assert.equal(
       Object.keys(exemplars).length,
       Object.keys(foils).length
     );
   });
 
-  it("is not the same as exemplars", () => {
+  it("creates foils that are not the same as exemplars", () => {
     assert.notDeepEqual(
       exemplars,
       foils
     );
   });
-  it("Creates unique foils", () => {
+  it("creates unique foils", () => {
     for (let type of Object.keys(exemplars)) {
       exemplar = exemplars[type]
       foil = foils[type]
       assert.notDeepEqual(foil.getImages(), exemplar.getImages());
     }
   });
-  it("Creates foils of the proper length", () => {
+  it("creates foils of the proper length", () => {
     for (let foil of Object.values(foils)) {
       assert.equal(foil.getImages().length, 3);
     }
   });
-  it("generates foils with the correct information in relation to the exemplars and params", () => {
+  it("creates foils with the correct information in relation to the exemplars and params", () => {
     assert.ok(randFoils.BBB1.type === 'NBB');
     assert.ok(randFoils.NNN1.type === 'NNN');
     assert.ok(randFoils.NNB1.type === 'NNB');

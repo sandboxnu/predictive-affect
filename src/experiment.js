@@ -5,8 +5,6 @@ const {
   generateImageHTMLNoDot,
   showFixationDot,
   showIntertrialBreak,
-  neuImages,
-  negImages,
   getImagePath,
   isNegativeImg
 } = require("./utils/imageUtils");
@@ -19,6 +17,9 @@ const {
   createExemplarCounts,
   normalizeExemplars
 } = require("./exemplars");
+const {
+  getFoil
+} = require("./foils");
 const { param } = require("./param");
 const timeline = [];
 
@@ -189,53 +190,6 @@ for (let block = 0; block < param["encodingBlocks"]; block += 1) {
 }
 
 // END ENCODING
-
-// creates a random foil for a single exemplar
-const createFoil = (curTrip, i) => {
-  let result = curTrip.copy();
-  let numImageTested = param["foilTestedOn"][i];
-  const typeTested = param["foilTestedType"][i];
-  const curType = curTrip.getImage(numImageTested).valence;
-
-  const foilType = curType === "N" ? "B" : "N";
-  var newType = typeTested ? foilType : curType;
-
-  const imgs = newType === "N" ? neuImages.slice() : negImages.slice();
-
-  var newImg;
-  var newFile = result.getImage(0).fileName;
-
-  while (curTrip.getImageNames().includes(newFile)) {
-    newFile = imgs[Math.floor(Math.random() * imgs.length)];
-  }
-
-  newImg = { fileName: newFile, dotPlacement: "N/A: foil", valence: newType };
-  result.type =
-    result.type.slice(0, numImageTested) +
-    newType +
-    result.type.slice(numImageTested + 1);
-  result.changeImageAt(numImageTested, newImg);
-
-  return result;
-};
-
-// creates a foil for every exemplar
-const createFoils = () => {
-  var result = [];
-  var count = 0;
-  for (let i in exemplars) {
-    result[i] = createFoil(exemplars[i], count);
-    count++;
-  }
-  return result;
-};
-
-var foils = createFoils();
-
-// returns the foil of the given triplet
-const getFoil = (correctTriplet, i) => {
-  return foils[i];
-};
 
 const testingInstructions = {
   type: "instructions",

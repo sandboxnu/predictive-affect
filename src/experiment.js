@@ -36,7 +36,7 @@ const participantId = {
 const qToQuit = function() {
   window.addEventListener(
     "keydown",
-    event => event.keyCode === 81 && window.close()
+    event => event.keyCode === 81 && jsPsych.endExperiment("You have chosen to leave the experiment.")
   );
 };
 
@@ -414,73 +414,81 @@ const download = {
   key_forward: "d"
 }
 
+const getData = function() {
+  normalizeExemplars(exemplars).forEach(image =>
+    jsPsych.data.get().push(image)
+  );
+  const ratingOutput = new Blob(
+    [
+      jsPsych.data
+        .get()
+        .ignore([
+          "trial_type",
+          "time_elapsed",
+          "responses",
+          "stimulus",
+          "stimuli",
+          "internal_node_id",
+          "view_history"
+        ])
+        .csv()
+    ],
+    { type: "text/csv" }
+  );
+  const encodingOutput = new Blob(
+    [
+      jsPsych.data
+        .get()
+        .filterCustom(trial => trial.trialType === "encoding")
+        .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
+        .csv()
+    ],
+    { type: "text/csv" }
+  );
+  const testingOutput = new Blob(
+    [
+      jsPsych.data
+        .get()
+        .filterCustom(trial => trial.trialType === "testing")
+        .ignore([
+          "trial_type",
+          "time_elapsed",
+          "stimulus",
+          "internal_node_id",
+          "view_history",
+          "trial_index"
+        ])
+        .csv()
+    ],
+    { type: "text/csv" }
+  );
+  const folderName = "experiment-data-" + param.participantId;
+  const filenameEncoding = {
+    name: `encoding_data_${param.participantId}.csv`,
+    data: encodingOutput
+  };
+  const filenameTesting = {
+    name: `testing_data_${param.participantId}.csv`,
+    data: testingOutput
+  };
+  const filenameRating = {
+    name: `rating_data_${param.participantId}.csv`,
+    data: ratingOutput
+  };
+  const files = [filenameEncoding, filenameTesting, filenameRating];
+  saveJsPsychFilesAsZip(files, folderName, jsPsych.getDisplayElement());
+};
+
+const downloadData = {
+  type: "call-function",
+  func: getData
+};
+
 timeline.push(completionCode);
 timeline.push(download);
+timeline.push(downloadData);
 
 jsPsych.init({
-  timeline: timeline,
-  on_finish: function() {
-    normalizeExemplars(exemplars).forEach(image =>
-      jsPsych.data.get().push(image)
-    );
-    const ratingOutput = new Blob(
-      [
-        jsPsych.data
-          .get()
-          .ignore([
-            "trial_type",
-            "time_elapsed",
-            "responses",
-            "stimulus",
-            "stimuli",
-            "internal_node_id",
-            "view_history"
-          ])
-          .csv()
-      ],
-      { type: "text/csv" }
-    );
-    const encodingOutput = new Blob(
-      [
-        jsPsych.data
-          .get()
-          .filterCustom(trial => trial.trialType === "encoding")
-          .ignore(["internal_node_id", "trial_index", "stimulus", "trial_type"])
-          .csv()
-      ],
-      { type: "text/csv" }
-    );
-    const testingOutput = new Blob(
-      [
-        jsPsych.data
-          .get()
-          .filterCustom(trial => trial.trialType === "testing")
-          .ignore([
-            "trial_type",
-            "time_elapsed",
-            "stimulus",
-            "internal_node_id",
-            "view_history",
-            "trial_index"
-          ])
-          .csv()
-      ],
-      { type: "text/csv" }
-    );
-    const folderName = "experiment-data-" + param.participantId;
-    const filenameEncoding = {
-      name: `encoding_data_${param.participantId}.csv`,
-      data: encodingOutput
-    };
-    const filenameTesting = {
-      name: `testing_data_${param.participantId}.csv`,
-      data: testingOutput
-    };
-    const filenameRating = {
-      name: `rating_data_${param.participantId}.csv`,
-      data: ratingOutput
-    };
-    const files = [filenameEncoding, filenameTesting, filenameRating];
-    saveJsPsychFilesAsZip(files, folderName, jsPsych.getDisplayElement());
-  }
+  timeline: timeline
+  
 });

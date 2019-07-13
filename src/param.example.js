@@ -41,18 +41,16 @@ param.foilTestedType = [
 ]; /* for every exemplar, whether the replaced image in the foil is the same affect as the image it replaces. */
 param.completionCode = Math.floor(Math.random() * 1000000000);
 
-if (param.foilTestedOn.length !== param.exemplarTypes.length * numExemplarsPerType) {
+if (param.foilTestedOn.length !== param.exemplarTypes.length * param.numExemplarsPerType) {
   throw new Error(
     "param.foilTestedOn and param.exemplarTypes match up by position, so they must be the same length."
   );
 }
 
-if (param.foilTestedOn.length !== param.exemplarTypes.length * numExemplarsPerType) {
+if (param.foilTestedOn.length !== param.exemplarTypes.length * param.numExemplarsPerType) {
   throw new Error(
     "param.foilTestedType and param.exemplarTypes match up by position, so they must be the same length."
   );
 }
 
-module.exports = {
-  param
-};
+module.exports = param;

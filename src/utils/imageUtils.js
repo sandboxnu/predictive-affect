@@ -1,5 +1,5 @@
 const jsPsych = require("jspsych");
-const { param } = require("../param");
+const param = require("param");
 
 // Utilities for use in the html scripts
 const neuImages = [

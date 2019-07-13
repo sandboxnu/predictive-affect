@@ -6,5 +6,8 @@ module.exports = {
     filename: 'experiment.js',
     path: path.resolve(__dirname, 'dist')
   },
+  externals: {
+    param: "param",
+  },
   devtool: 'cheap-module-source-map'
 }

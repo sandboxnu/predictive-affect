@@ -20,7 +20,8 @@ const {
 const {
   getFoil
 } = require("./foils");
-const { param } = require("./param");
+const param = require("param");
+
 const timeline = [];
 
 // BEGIN INSTRUCTIONS

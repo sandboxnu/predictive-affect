@@ -1,4 +1,4 @@
-const { param } = require("./param");
+const param = require("param");
 const { copyImage } = require("./utils/imageUtils");
 const {
   randomlyPickFromList,

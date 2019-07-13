@@ -21,7 +21,7 @@
     "build": "webpack --mode=development",
     "build:prod": "webpack --mode=production",
     "start": "webpack-dev-server",
-    "test": "mocha",
+    "test": "cp ./src/param.js ./node_modules/param.js && mocha",
     "format": "prettier --write ./**/*.js",
     "lint": "eslint ./**/*.js",
     "postinstall": "[ -f src/param.js ] || cp src/param.example.js src/param.js"

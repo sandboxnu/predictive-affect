@@ -24,12 +24,26 @@ const paramHalfRand = {
   foilTestedType: [false, true, false, true]
 }
 
+const paramLotsPerType = {
+  exemplarTypes: ['NNN', 'BBB'],
+  foilTestedOn: [1, 0, 1, 0, 0, 0, 0, 1, 2, 2, 0, 1, 2, 1, 0, 1, 0, 0, 0, 0],
+  numExemplarsPerType: 10,
+  foilTestedType: [false, false, false, true, true, true, false, true, false, true, true, true, false, true, false, false, false, true, false, true]
+}
+
+const paramTiny = {
+  exemplarTypes: ['NNN'],
+  foilTestedOn: [1],
+  numExemplarsPerType: 1,
+  foilTestedType: [false]
+}
+
 describe("Foil generation from simple params", () => {
-  let exemplars, foils;
+  let exemplars, foils, randExemplars, randFoils;
   before(() => {
     exemplars = populateExemplars(paramSimple);
     foils = createFoils(exemplars, paramSimple);
-    randExemplars = populateExemplars(paramHalfRand)
+    randExemplars = populateExemplars(paramHalfRand);
     randFoils = createFoils(randExemplars, paramHalfRand);
   });
 
@@ -48,9 +62,17 @@ describe("Foil generation from simple params", () => {
   });
   it("creates unique foils", () => {
     for (let type of Object.keys(exemplars)) {
-      exemplar = exemplars[type]
-      foil = foils[type]
+      exemplar = exemplars[type];
+      foil = foils[type];
       assert.notDeepEqual(foil.getImages(), exemplar.getImages());
+    }
+  });
+  it("creates foils that are only different by one image", () => {
+    for (let type of Object.keys(exemplars)) {
+      exemplarImages = exemplars[type].getImageNames();
+      foilImages = foils[type].getImageNames();
+      sameImages = exemplarImages.filter(image => foilImages.includes(image));
+      assert.equal(sameImages.length, 2);
     }
   });
   it("creates foils of the proper length", () => {
@@ -77,5 +99,47 @@ describe("Foil generation from simple params", () => {
     assert.ok(randExemplars.NNB1.isRand === false);
     assert.ok(randExemplars.BBB1.isRand === true);
     assert.ok(randExemplars.NBB1.isRand === true);
+  });
+});
+describe("Foil generation from many per type param", () => {
+  let manyExemplars, manyFoils;
+  before(() => {
+    manyExemplars = populateExemplars(paramLotsPerType);
+    manyFoils = createFoils(manyExemplars, paramLotsPerType);
+  });
+  it("creats the correct number of foils", () => {
+    assert.equal(
+      Object.keys(manyExemplars).length,
+      Object.keys(manyFoils).length
+    );
+  });
+  it("creates foils that are only different by one image", () => {
+    for (let type of Object.keys(manyExemplars)) {
+      exemplarImages = manyExemplars[type].getImageNames();
+      foilImages = manyFoils[type].getImageNames();
+      sameImages = exemplarImages.filter(image => foilImages.includes(image));
+      assert.equal(sameImages.length, 2);
+    }
+  });
+});
+describe("Foil generation from tiny param", () => {
+  let tinyExemplars, tinyFoils;
+  before(() => {
+    tinyExemplars = populateExemplars(paramTiny);
+    tinyFoils = createFoils(tinyExemplars, paramTiny);
+  });
+  it("creats the correct number of foils", () => {
+    assert.equal(
+      Object.keys(tinyExemplars).length,
+      Object.keys(tinyFoils).length
+    );
+  });
+  it("creates foils that are only different by one image", () => {
+    for (let type of Object.keys(tinyExemplars)) {
+      exemplarImages = tinyExemplars[type].getImageNames();
+      foilImages = tinyFoils[type].getImageNames();
+      sameImages = exemplarImages.filter(image => foilImages.includes(image));
+      assert.equal(sameImages.length, 2);
+    }
   });
 });

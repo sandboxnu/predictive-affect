@@ -3,6 +3,8 @@
 This project is a psychology experiment for researcher Danlei Chen of Northeastern University's [Interdisciplinary Affective Science Lab](https://www.affective-science.org/). 
 It measures the effect a person's feeling about an image has on their memory of that image.
 
+### No demo is available due to the sensitive nature of the images shown.
+
 ## Running the Experiment
 
 `yarn` will install the all the dependencies, and copy `param.example.js` to `param.js` if `param.js` doesn't exist

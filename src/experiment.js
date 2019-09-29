@@ -5,7 +5,6 @@ const {
   generateImageHTMLNoDot,
   showFixationDot,
   showIntertrialBreak,
-  getImagePath,
   isNegativeImg
 } = require("./utils/imageUtils");
 const {
@@ -220,12 +219,12 @@ const displayTriplet = (trip, ordering) => {
   timeline.push(tripletInstructions);
 
   for (let i = 0; i < param["imageStructLength"]; i++) {
-    const imgPath = getImagePath(trip.getImage(i));
+    const img = trip.getImage(i);
     showFixationDot(timeline);
 
     const imagePrompt = {
-      type: "image-keyboard-response",
-      stimulus: imgPath,
+      type: "html-keyboard-response",
+      stimulus: generateImageHTMLNoDot(img),
       choices: jsPsych.NO_KEYS,
       trial_duration: 1000
     };

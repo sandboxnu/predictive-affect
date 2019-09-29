@@ -185,7 +185,7 @@ const getImagePath = ({ valence, fileName }) => {
  */
 const generateImageHTML = image => `
 <div class="img-overlay-wrap">
-<img src="${getImagePath(image)}">
+<img class="${param.blurImages && 'img-blurred'}" src="${getImagePath(image)}">
 <svg height="${param.img_y}" width="${param.img_x}">
   <circle cx="${image.greyDotX}" cy="${image.greyDotY}" r="${
   param.grey_radius
@@ -197,7 +197,7 @@ const generateImageHTML = image => `
 // generates image HTML like above but with no grey dot
 const generateImageHTMLNoDot = image => `
 <div class="img-overlay-wrap">
-<img src="${getImagePath(image)}">
+<img class="${param.blurImages && 'img-blurred'}" src="${getImagePath(image)}">
 </div>
 `;
 

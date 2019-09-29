@@ -144,3 +144,7 @@
 #jspsych-data-display {
   text-align: left;
 }
+
+.img-blurred {
+  filter: blur(30px);
+}

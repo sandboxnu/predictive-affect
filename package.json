@@ -5,7 +5,7 @@
   "private": true,
   "dependencies": {
     "jspsych": "git+https://git@github.com/sandboxneu/jsPsych.git#1b326d2",
-    "jszip": "^3.2.1"
+    "jszip": "^3.7.0"
   },
   "devDependencies": {
     "eslint": "^6.0.0",
